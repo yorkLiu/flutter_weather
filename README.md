@@ -98,3 +98,6 @@ Data data = Data.fromJson(json.decode(jsonValue));
 
 ## Dependency Packages
 - [dio](https://github.com/flutterchina/dio)
+- [json_annotation](https://pub.dartlang.org/packages/json_annotation)
+- [json_serializable](https://pub.dartlang.org/packages/json_serializable)
+- [build_runner](https://pub.dartlang.org/packages/build_runner)
