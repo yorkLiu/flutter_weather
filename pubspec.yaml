@@ -25,9 +25,33 @@ dependencies:
   # https://github.com/flutterchina/dio
   dio: ^1.0.9
 
+
+  # dart中 json序列化 依赖
+  # json_annotation
+  # json_serializable
+  # https://flutterchina.club/json
+  json_annotation: ^2.0.0
+
+
+  # build_runner
+  # The build_runner package provides a concrete way of generating files using Dart code,
+  # outside of tools like pub. Unlike pub serve/build, files are always generated directly on disk,
+  # and rebuilds are incremental - inspired by tools such as Bazel.
+  # https://github.com/dart-lang/build
+  build_runner: ^1.1.2
+
+  # dart中 json序列化 依赖
+  # json_annotation
+  # json_serializable
+  json_serializable: ^2.0.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+
 
 
 # For information on the generic Dart part of this file, see the
