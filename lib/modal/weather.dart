@@ -96,7 +96,7 @@ class Today{
 
   @override
   String toString() {
-    return 'Today{date: $date, time: $time, cityName: $cityName, cityCode: $cityCode, temp: $temp, weather: $weather, weatherCode: $weatherCode, winDirect: $winDirect, winPower: $winPower, winSpeed: $winSpeed, humidity: $humidity, visibility: $visibility, atmospheric: $atmospheric, aqi: $aqi, rain: $rain, rain24h: $rain24h}';
+    return '{date: $date, time: $time, cityName: $cityName, cityCode: $cityCode, temp: $temp, weather: $weather, weatherCode: $weatherCode, winDirect: $winDirect, winPower: $winPower, winSpeed: $winSpeed, humidity: $humidity, visibility: $visibility, atmospheric: $atmospheric, aqi: $aqi, rain: $rain, rain24h: $rain24h}';
   }
 
 
@@ -144,12 +144,35 @@ class Future40Days{
   factory Future40Days.fromJson(Map<String, dynamic> json) => _$Future40DaysFromJson(json);
   Map<String, dynamic> toJson() => _$Future40DaysToJson(this);
 
+
+  String get getWeather {
+    if(weather1 == weather2){
+      return weather1;
+    } else if(weather2 != null && weather2.isNotEmpty){
+      return "$weather1 转 $weather2";
+    }
+  }
+
+  String get getWinDirect {
+    if(winDirect1 == winDirect2 && winDirect1 != null && winDirect1.isNotEmpty){
+      return weather1;
+    } else if(winDirect2 != null && winDirect2.isNotEmpty){
+      return "$winDirect1 转 $winDirect2";
+    }
+  }
+
+  String get getWinPower{
+    if(winPower1 == winPower2 && winPower1 != null && winPower1.isNotEmpty){
+      return winPower1;
+    } else if(winPower2 != null && winPower2.isNotEmpty){
+      return "$winPower1 转 $winPower2";
+    }
+  }
+
   @override
   String toString() {
     return '{date: $date, nl: $nl, nljq: $nljq, week: $week, maxTemp: $maxTemp, minTemp: $minTemp, holiday: $holiday, weather1: $weather1, weather2: $weather2, winDirect1: $winDirect1, winDirect2: $winDirect2, winPower1: $winPower1, winPower2: $winPower2, aqi: $aqi, aqi_label: $aqi_label}';
   }
-
-
 }
 
 /**
