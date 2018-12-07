@@ -30,8 +30,13 @@ dependencies:
   # json_annotation
   # json_serializable
   # https://flutterchina.club/json
+  # https://pub.dartlang.org/packages/json_serializable
   json_annotation: ^2.0.0
 
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
 
   # build_runner
   # The build_runner package provides a concrete way of generating files using Dart code,
@@ -44,15 +49,6 @@ dependencies:
   # json_annotation
   # json_serializable
   json_serializable: ^2.0.0
-
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-
-
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

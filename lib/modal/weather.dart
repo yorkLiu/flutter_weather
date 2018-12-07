@@ -3,6 +3,36 @@ import '../data/config.dart' show WeatherConverter;
 
 part 'weather.g.dart';
 
+// weather.g.dart 是使用 flutter 的 `build_runner` 自动编译的
+// 编译步骤
+// 1. define class and constructor method
+//    ```dart
+//     Class Data {
+//          Data({this.name, this.url});
+//          String name;
+//          String url;
+//     }
+//    ```
+//
+// 2. add JsonSerializable() annotation to class
+//    ```dart
+//     @JsonSerializable()
+//     Class Data {
+//          Data({this.name, this.url});
+//          String name;
+//          String url;
+//     }
+//    ```
+//
+// 3. Run command in project folder,
+//   a. `flutter packages pub run build_runner build`  每次手动生成，假如 Data Class中增加或者删除了property, 则需要手动运行改命令
+//   b. `flutter packages pub run build_runner watch` 使用_watcher_可以使我们的源代码生成的过程更加方便。它会监视我们项目中文件的变化，并在需要时自动构建必要的文件; 只需启动一次观察器，然后并让它在后台运行，这是安全的.
+//
+// 4. Json => Data dart Object
+//  ```dart
+//    Data data = Data.fromJson(json.decode(jsonData));
+//  ```
+
 @JsonSerializable()
 class Weather {
   Weather({this.today, this.fc40, this.fc1h_24});
