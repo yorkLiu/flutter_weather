@@ -92,6 +92,9 @@ Class Data {
 Data data = Data.fromJson(json.decode(jsonValue));
 ```
 
+4. 更多关于Dart『序列/反序列』的使用，请参考
+- [Flutter中文网](https://flutterchina.club/json)
+- [Flutter Json自动反序列化——json_serializable](https://juejin.im/post/5b5f00e7e51d45190571172f)
 
 ## Dependency Packages
 - [dio](https://github.com/flutterchina/dio)
