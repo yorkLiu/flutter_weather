@@ -69,9 +69,9 @@ Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
 ```dart
 import 'package:json_annotation/json_annotation.dart';
 
-part 'data.g.dart';  // 这里IDEA会提示报错，暂不用管，因为这个文件目前还不存在，这个文件是交给dart自动生成的
+part 'data.g.dart';
 
-@JsonSerializable()  // 为Class 添加 Json 序列化 annotation
+@JsonSerializable()
 Class Data {
     // 定义 class的构造方法
     Data({this.name, this.email});
@@ -92,7 +92,7 @@ Class Data {
 Data data = Data.fromJson(json.decode(jsonValue));
 ```
 
-4. 更多关于Dart『序列/反序列』的使用，请参考
+5. 更多关于Dart『序列/反序列』的使用，请参考
 - [Flutter中文网](https://flutterchina.club/json)
 - [Flutter Json自动反序列化——json_serializable](https://juejin.im/post/5b5f00e7e51d45190571172f)
 
