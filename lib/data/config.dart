@@ -249,7 +249,17 @@ class WeatherConverter{
   }
 }
 
+
 void main(){
-  print(FXBM[0]);
+//  DateTime today = new DateTime.now();
+//  String dateSlug ="${today.year.toString()}${today.month.toString().padLeft(2,'0')}${today.day.toString().padLeft(2,'0')}";
+//  print(dateSlug);
+
+  DateTime updateTime;
+
+  updateTime = updateTime??DateTime.now();
+
+  print(updateTime);
 
 }
+

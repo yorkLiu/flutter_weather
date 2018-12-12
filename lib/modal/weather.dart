@@ -35,17 +35,31 @@ part 'weather.g.dart';
 
 @JsonSerializable()
 class Weather {
-  Weather({this.today, this.fc40, this.fc1h_24});
+  Weather({this.today, this.fc40, this.fc1h_24, this.errorCode});
 
+  String cityCode;
   Today today;
   List<Future40Days> fc40;
   List<Future24Hours> fc1h_24;
+
+  String errorCode;
+
+  void setCityCode(String code){
+    this.cityCode = code;
+  }
 
   // 反序列化 json => dart object
   factory Weather.fromJson(Map<String, dynamic> json) => _$WeatherFromJson(json);
 
   // 序列化 dart object => json
   Map<String, dynamic> toJson() => _$WeatherToJson(this);
+
+  @override
+  String toString() {
+    return 'Weather{today: $today, fc40: $fc40, fc1h_24: $fc1h_24}';
+  }
+
+
 }
 
 /**
@@ -93,12 +107,17 @@ class Today{
   factory Today.fromJson(Map<String, dynamic> json) => _$TodayFromJson(json);
   Map<String, dynamic> toJson() => _$TodayToJson(this);
 
+  String get getDateOnly {
+    if(date.contains("(")){
+      return date.substring(0, date.indexOf("("));
+    }
+    return date;
+  }
 
   @override
   String toString() {
     return '{date: $date, time: $time, cityName: $cityName, cityCode: $cityCode, temp: $temp, weather: $weather, weatherCode: $weatherCode, winDirect: $winDirect, winPower: $winPower, winSpeed: $winSpeed, humidity: $humidity, visibility: $visibility, atmospheric: $atmospheric, aqi: $aqi, rain: $rain, rain24h: $rain24h}';
   }
-
 
 }
 
@@ -147,11 +166,16 @@ class Future40Days{
 
   String get getWeather {
     if(weather1 == weather2){
-      return weather1;
+      return WeatherConverter.convertWeatherCode(weather1);
     } else if(weather2 != null && weather2.isNotEmpty){
-      return "$weather1 转 $weather2";
+      return WeatherConverter.convertWeatherCode(weather1) + " 转 " + WeatherConverter.convertWeatherCode(weather2);
     }
   }
+
+  String get getWeather1Only {
+    return WeatherConverter.convertWeatherCode(weather1);
+  }
+
 
   String get getWinDirect {
     if(winDirect1 == winDirect2 && winDirect1 != null && winDirect1.isNotEmpty){
@@ -196,6 +220,20 @@ class Future24Hours{
 
   factory Future24Hours.fromJson(Map<String, dynamic> json) => _$Future24HoursFromJson(json);
   Map<String, dynamic> toJson() => _$Future24HoursToJson(this);
+
+  String get convertDateTime{
+    String _time =  datetime.substring(8,10);
+    return "$_time时";
+  }
+
+  int get getHour{
+    String _time =  datetime.substring(8,10);
+    return int.parse(_time);
+  }
+
+  String get getWeather {
+    return WeatherConverter.convertWeatherCode(weather);
+  }
 
   @override
   String toString() {

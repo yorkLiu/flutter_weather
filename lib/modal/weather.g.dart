@@ -76,8 +76,8 @@ Future40Days _$Future40DaysFromJson(Map<String, dynamic> json) {
       maxTemp: json['maxTemp'] as String,
       minTemp: json['minTemp'] as String,
       holiday: json['holiday'] as String,
-      weather1: WeatherConverter.convertWeatherCode(json['weather1']) as String,
-      weather2: WeatherConverter.convertWeatherCode(json['weather2']) as String,
+      weather1: json['weather1'] as String,
+      weather2: json['weather2'] as String,
       winDirect1: WeatherConverter.convertWinDirect(json['winDirect1']) as String,
       winDirect2: WeatherConverter.convertWinDirect(json['winDirect2']) as String,
       winPower1: WeatherConverter.convertWinPower(json['winPower1']) as String,
@@ -108,10 +108,8 @@ Map<String, dynamic> _$Future40DaysToJson(Future40Days instance) =>
 Future24Hours _$Future24HoursFromJson(Map<String, dynamic> json) {
   return Future24Hours(
       datetime: json['datetime'] as String,
-      weather:  WeatherConverter.convertWeatherCode(json['weather']) as String,
+      weather:  json['weather'] as String,
       temp: json['temp'] as String,
-//      winDirect:json['winDirect'] as String,
-//      winPower: json['winPower'] as String);
       winDirect: WeatherConverter.convertWinDirect(json['winDirect']) as String,
       winPower: WeatherConverter.convertWinPower(json['winPower']) as String);
 }
