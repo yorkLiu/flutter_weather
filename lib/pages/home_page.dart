@@ -31,8 +31,8 @@ class _TodayWeatherItem extends StatelessWidget {
     this.todayExtraInfo
   });
 
-  final Today today;
-  final Future40Days todayExtraInfo;
+  Today today;
+  Future40Days todayExtraInfo;
 
   static const double HORIZONTAL_SIZE = 5.0;
   static const double VERTICAL_SIZE = 8.0;
@@ -71,7 +71,7 @@ class _TodayWeatherItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                AppIcons.getWeatherIcon(today.weatherCode),
+                AppIcons.getWeatherIcon(Utils.getWeatherIconByWeatherCode(today.weatherCode)),
                 Text(today.weather, style: AppStyles.todayWeatherTextStyle)
               ],
             ),
@@ -99,9 +99,16 @@ class _TodayWeatherItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(Labels.AQI_TEXT),
-                AppStyles.DIVIDER_HEIGHT_15,
+                AppStyles.DIVIDER_HEIGHT_10,
+                new CircleAvatar(
+                  radius: Constants.AQI_RADIUS,
+                  backgroundColor: Utils.getQqiColor(todayExtraInfo.aqi),
+                  foregroundColor: Colors.white,
+                  child: new Text(todayExtraInfo.aqi, style: AppStyles.fontSize_12_TextStyle),
+                ),
+                AppStyles.DIVIDER_HEIGHT_10,
                 Text(Utils.getAqiDisplayText(todayExtraInfo.aqi),
-                    style: AppStyles.getAQITextStyle(int.parse(todayExtraInfo.aqi)))
+                    style: AppStyles.getAQITextStyle(todayExtraInfo.aqi)),
               ],
             ),
           )
@@ -120,7 +127,7 @@ class _TodayWeatherShortDetailItem extends StatelessWidget {
   double SUB_DETAIL_VERTICAL = 5.0;
   double SUB_DETAIL_DEVIDER_WIDTH = 20.0;
 
-  final Today today;
+  Today today;
 
 
   @override
@@ -246,7 +253,6 @@ class _TodayWeatherShortDetailItem extends StatelessWidget {
   }
 }
 
-
 // 未来 7天 天气
 class _DailyWeatherItem extends StatelessWidget {
   _DailyWeatherItem({this.date,
@@ -255,12 +261,12 @@ class _DailyWeatherItem extends StatelessWidget {
     this.maxTemp,
     this.weather,
     this.weatherCode});
-  final String date; // 日期 (i.e: 20180921)
-  final String week; // 周几 (i.e: 星期五)
-  final String maxTemp; // 最高温度
-  final String minTemp; // 最低湿度
-  final String weather;
-  final String weatherCode;
+  String date; // 日期 (i.e: 20180921)
+  String week; // 周几 (i.e: 星期五)
+  String maxTemp; // 最高温度
+  String minTemp; // 最低湿度
+  String weather;
+  String weatherCode;
 
   @override
   Widget build(BuildContext context) {
@@ -297,11 +303,11 @@ class _TwentyFourHoursWeatherItem extends StatelessWidget {
     this.temp
   });
 
-  final String time;
-  final int hour;
-  final String weatherCode;
-  final String weather;
-  final String temp;
+  String time;
+  int hour;
+  String weatherCode;
+  String weather;
+  String temp;
 
   @override
   Widget build(BuildContext context) {
@@ -309,19 +315,13 @@ class _TwentyFourHoursWeatherItem extends StatelessWidget {
       width: 51,
       height: 75,
       margin: EdgeInsets.symmetric(vertical: 10.0),
-//      decoration: BoxDecoration(
-//          border: Border(
-//              right: AppStyles.borderStyle
-//          )
-//      ),
       child: Column(
-
         children: <Widget>[
           Text(time),
-//          Text("小雨"),
-          SizedBox(height: 10.0,),
+//          Text(weather),
+          AppStyles.DIVIDER_HEIGHT_10,
           AppIcons.getWeatherIcon(Utils.getWeatherIconByWeatherCode(weatherCode, hour: hour), size: 24.0),
-          SizedBox(height: 3.0,),
+          AppStyles.DIVIDER_HEIGHT_3,
           Text("$temp°")
         ],
       ),
@@ -457,7 +457,9 @@ class _HomePageState extends State<HomePage> {
           scrollDirection: Axis.horizontal,
           itemCount: 24,
           itemBuilder: (BuildContext context, int index) {
+
             Future24Hours item = widget.future24hours[index];
+            print("$index:> $item");
             return _TwentyFourHoursWeatherItem(
                 time: item.convertDateTime,
                 hour: item.getHour,
@@ -480,6 +482,7 @@ class _HomePageState extends State<HomePage> {
     widget.future40days = data.fc40;
     widget.future24hours = data.fc1h_24;
     widget.todayExtraInfo = widget.future40days[0];
+    // end init the data
 
 //    WidgetsBinding.instance
 //        .addPostFrameCallback((_) => _refreshIndicatorKey.currentState.show());
@@ -487,21 +490,19 @@ class _HomePageState extends State<HomePage> {
 
   Future<Null> _refreshData(){
     return WeatherUtils.loadWeatherData(widget.data.cityCode).then((data) {
-      print(data);
       setState(() {
         widget.updateTime = DateTime.now();
         widget.today = data.today;
         widget.future40days = data.fc40;
         widget.future24hours = data.fc1h_24;
         widget.todayExtraInfo = widget.future40days[0];
-
       });
       _scaffoldKey.currentState?.showSnackBar(SnackBar(
             content: Row(
               children: <Widget>[
-                Icon(Icons.info, color: Colors.green),
-                AppStyles.DIVIDER_HEIGHT_15,
-                Text('数据加载完成')
+                AppIcons.infoIcon,
+                AppStyles.DIVIDER_WIDTH_5,
+                Text(Labels.DATA_LOADED)
               ],
             ),
             backgroundColor: Colors.black54,
@@ -511,6 +512,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       key: _scaffoldKey,

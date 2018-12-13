@@ -11,6 +11,9 @@ class AppIcons{
   static IconData visibility = newIconData(0xe832); // 能见度
 
 
+  static Icon infoIcon = Icon(Icons.info, color: Colors.green);
+
+
 
   // create a IconData by codePoint (unicode)
   static IconData newIconData(int codePoint, {String fontFamily: Constants.AppIconFontFamily}){
@@ -69,14 +72,19 @@ class AppStyles {
 
   static const todayWeatherTextStyle= TextStyle(fontSize: 12.0);
 
+  static const fontSize_12_TextStyle = TextStyle(fontSize: 14.0);
+
+  static const DIVIDER_HEIGHT_3 = SizedBox(height: 3.0);
   static const DIVIDER_HEIGHT_6 = SizedBox(height: 6.0);
+  static const DIVIDER_HEIGHT_10 = SizedBox(height: 10.0);
   static const DIVIDER_HEIGHT_15 = SizedBox(height: 15.0);
+  static const DIVIDER_WIDTH_5 = SizedBox(width: 5.0);
 
   static const mainTemperatureTextStyle = TextStyle(
       fontSize: 60.0,
       fontWeight: FontWeight.bold);
 
-  static TextStyle getAQITextStyle(int aqi){
+  static TextStyle getAQITextStyle(String aqi){
     // 优/AQI: 0 - 50
     // 良/AQI: 51 - 100
     // 轻度污染/AQI: 101－150
@@ -84,28 +92,7 @@ class AppStyles {
     // 重度污染/ AQI: 201－300
     // 严重污染/ AQI: 大于300
 
-    Color _color;
-    String _flag_text;
-
-    if(aqi <= 50){
-      _color = AppColors.AQI_LEVEL_1;
-      _flag_text = "优";
-    } else if(aqi > 50 && aqi <=100){
-      _color = AppColors.AQI_LEVEL_2;
-      _flag_text = "良";
-    } else if(aqi > 100 && aqi <=150){
-      _color = AppColors.AQI_LEVEL_3;
-      _flag_text = "轻度污染";
-    } else if(aqi > 150 && aqi <=200){
-      _color = AppColors.AQI_LEVEL_4;
-      _flag_text = "中度污染";
-    } else if(aqi > 200 && aqi <=300){
-      _color = AppColors.AQI_LEVEL_5;
-      _flag_text = "重度污染";
-    } else if(aqi > 300){
-      _color = AppColors.AQI_LEVEL_6;
-      _flag_text = "严重污染";
-    }
+    Color _color = Utils.getQqiColor(aqi);
 
     return TextStyle(
       fontSize: 14.0,
@@ -124,6 +111,8 @@ class Labels {
   static const HUMIDITY_TEXT = "相对湿度";
   static const VISIBILITY_TEXT = "能见度";
   static const TODAY_TEXT = "今天";
+
+  static const DATA_LOADED = "数据更新成功";
 }
 
 
@@ -156,7 +145,37 @@ class Utils{
       _aqi_label = "严重污染";
     }
 
-    return "$aqi_str $_aqi_label";
+    return "$_aqi_label";
+  }
+
+  static Color getQqiColor(String aqi_str){
+    int aqi = int.parse(aqi_str);
+    String _aqi_label;
+
+    Color _color;
+//    String _flag_text;
+
+    if(aqi <= 50){
+      _color = AppColors.AQI_LEVEL_1;
+//      _flag_text = "优";
+    } else if(aqi > 50 && aqi <=100){
+      _color = AppColors.AQI_LEVEL_2;
+//      _flag_text = "良";
+    } else if(aqi > 100 && aqi <=150){
+      _color = AppColors.AQI_LEVEL_3;
+//      _flag_text = "轻度污染";
+    } else if(aqi > 150 && aqi <=200){
+      _color = AppColors.AQI_LEVEL_4;
+//      _flag_text = "中度污染";
+    } else if(aqi > 200 && aqi <=300){
+      _color = AppColors.AQI_LEVEL_5;
+//      _flag_text = "重度污染";
+    } else if(aqi > 300){
+      _color = AppColors.AQI_LEVEL_6;
+//      _flag_text = "严重污染";
+    }
+
+    return _color;
   }
 
   /// Get weather icon by weather code
@@ -166,7 +185,7 @@ class Utils{
   /// 20 ~ 次日凌晨的 5点 为夜间
   /// 06 ~ 19点为 日间
   static String getWeatherIconByWeatherCode(String weathercode, {int hour: null}){
-    String _weatherCode = weathercode;
+    String _weatherCode = weathercode.startsWith(new RegExp("d|n"))? weathercode.replaceAll(RegExp("d|n"), '') : weathercode;
     if(_specialWeatherCode.contains(weathercode)){
       int currentHour = DateTime.now().hour;
       int minusHour = hour != null ? (24-hour) : (24-currentHour);
@@ -205,4 +224,7 @@ class Utils{
 
 class Constants {
   static const AppIconFontFamily ="Weather_IconFont";
+
+  static const AQI_RADIUS = 15.0;
+
 }

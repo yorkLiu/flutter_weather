@@ -251,15 +251,9 @@ class WeatherConverter{
 
 
 void main(){
-//  DateTime today = new DateTime.now();
-//  String dateSlug ="${today.year.toString()}${today.month.toString().padLeft(2,'0')}${today.day.toString().padLeft(2,'0')}";
-//  print(dateSlug);
-
-  DateTime updateTime;
-
-  updateTime = updateTime??DateTime.now();
-
-  print(updateTime);
+  String weathercode="n01";
+  String _weatherCode = weathercode.startsWith(new RegExp("d|n"))? weathercode.replaceAll(RegExp("d|n"), '') : weathercode;
+  print(_weatherCode);
 
 }
 

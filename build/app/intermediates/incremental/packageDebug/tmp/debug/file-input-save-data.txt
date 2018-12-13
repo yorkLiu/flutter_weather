@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Dec 12 16:39:33 CST 2018
+#Thu Dec 13 11:42:03 CST 2018
 56.path=flutter_assets/assets/images/weather_icons/d13.png
 5.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
 42.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
