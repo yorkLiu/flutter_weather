@@ -33,6 +33,15 @@ dependencies:
   # https://pub.dartlang.org/packages/json_serializable
   json_annotation: ^2.0.0
 
+  # flutter calendar
+  # https://pub.dartlang.org/packages/flutter_calendar_carousel#-installing-tab-
+  # flutter_calendar_carousel: ^1.3.2
+
+  # flutter easyrefresh
+  # https://pub.dartlang.org/packages/flutter_easyrefresh#-readme-tab-
+  # EasyRefresh很容易就能在Flutter应用上实现下拉刷新以及上拉加载操作
+  # flutter_easyrefresh: ^1.0.7
+
 
 dev_dependencies:
   flutter_test:

@@ -3,11 +3,18 @@ import 'dart:async';
 import '../modal/weather.dart';
 import '../constants.dart';
 import '../data/weather_utils.dart' show WeatherUtils;
+import 'more_days_weather.dart';
+import 'bottom_expand_widget.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.data}): super(key: key);
 
   final Weather data;
+
+  ////// global config [start] ///////////
+  double mainContainerHeight = 200.0;
+  ////// global config [end] ////////////
+
 
   Today today;
   List<Future40Days> future40days;
@@ -15,6 +22,15 @@ class HomePage extends StatefulWidget {
   List<Future24Hours> future24hours;
 
   DateTime updateTime;
+
+  // 判断 bottomsheet 是否已经打开
+  bool isBottomSheetDisplayed = false;
+
+  // 判读 手势 是否 从下往上滑动
+  // 从下往上滑动 则加载 15 & 40天的天气
+  bool allowShowMore = false;
+
+  bool isShowMoreWeather = false;
 
   String getUpdateTime(){
     updateTime = updateTime??DateTime.now();
@@ -28,11 +44,14 @@ class HomePage extends StatefulWidget {
 class _TodayWeatherItem extends StatelessWidget {
   _TodayWeatherItem({
     this.today,
-    this.todayExtraInfo
+    this.todayExtraInfo,
+    this.height
   });
 
-  Today today;
-  Future40Days todayExtraInfo;
+  final Today today;
+  final Future40Days todayExtraInfo;
+
+  double height = 150.0;
 
   static const double HORIZONTAL_SIZE = 5.0;
   static const double VERTICAL_SIZE = 8.0;
@@ -47,26 +66,16 @@ class _TodayWeatherItem extends StatelessWidget {
     return today.getDateOnly;
   }
 
-  /// 获取 农历
-  /// If 农历节气
-  /// return 农历(农历节气)
-  String getChineseDateInfo(){
-    if(todayExtraInfo.nljq != null && todayExtraInfo.nljq.isNotEmpty){
-      return "农历 ${todayExtraInfo.nl}(${todayExtraInfo.nljq})";
-    }
-    return "农历 ${todayExtraInfo.nl}";
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-//      constraints: BoxConstraints(minHeight: 150.0, maxHeight: 250.0),
-      margin: EdgeInsets.symmetric(
-          horizontal: HORIZONTAL_SIZE, vertical: VERTICAL_SIZE),
+      height: height,
+      constraints: BoxConstraints(minHeight: 150.0),
       child: Row(
         children: <Widget>[
           Container(
-            width: 100,
+            width: 100.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,9 +88,11 @@ class _TodayWeatherItem extends StatelessWidget {
           Expanded(
             child: Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(getDateInfo()),
-                  Text(getChineseDateInfo()),
+                  Text(Utils.getChineseDateInfo(todayExtraInfo.nl, nljq: todayExtraInfo.nljq)),
                   Text(todayExtraInfo.week),
                   AppStyles.DIVIDER_HEIGHT_6,
                   Text("${today.temp}℃",
@@ -104,7 +115,7 @@ class _TodayWeatherItem extends StatelessWidget {
                   radius: Constants.AQI_RADIUS,
                   backgroundColor: Utils.getQqiColor(todayExtraInfo.aqi),
                   foregroundColor: Colors.white,
-                  child: new Text(todayExtraInfo.aqi, style: AppStyles.fontSize_12_TextStyle),
+                  child: new Text(todayExtraInfo.aqi, style: AppStyles.fontSize_14_TextStyle),
                 ),
                 AppStyles.DIVIDER_HEIGHT_10,
                 Text(Utils.getAqiDisplayText(todayExtraInfo.aqi),
@@ -122,18 +133,12 @@ class _TodayWeatherShortDetailItem extends StatelessWidget {
 
   _TodayWeatherShortDetailItem({this.today});
 
-  double SUB_DETAIL_ICON_SIZE = 30.0;
-  double SUB_DETAIL_HORIZONTAL = 10.0;
-  double SUB_DETAIL_VERTICAL = 5.0;
-  double SUB_DETAIL_DEVIDER_WIDTH = 20.0;
-
   Today today;
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 113.0,
+        height: Constants.SUB_CONTAINER_HEIGHT,
         decoration: BoxDecoration(
             border: Border(
               top: AppStyles.borderStyle,
@@ -155,16 +160,16 @@ class _TodayWeatherShortDetailItem extends StatelessWidget {
                             right: AppStyles.borderStyle,
                           )),
                       padding: EdgeInsets.symmetric(
-                          vertical: SUB_DETAIL_VERTICAL,
-                          horizontal: SUB_DETAIL_HORIZONTAL),
+//                          vertical: Constants.SUB_DETAIL_VERTICAL,
+                          horizontal: Constants.SUB_DETAIL_HORIZONTAL),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Icon(
                               AppIcons.rain,
-                              size: SUB_DETAIL_ICON_SIZE),
-                          SizedBox(width: SUB_DETAIL_DEVIDER_WIDTH),
+                              size: Constants.SUB_DETAIL_ICON_SIZE),
+                          SizedBox(width: Constants.SUB_DETAIL_DEVIDER_WIDTH),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[Text(Labels.RAIN_TEXT), Text('${today.rain}mm')],
@@ -176,15 +181,15 @@ class _TodayWeatherShortDetailItem extends StatelessWidget {
                   Expanded(
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          vertical: SUB_DETAIL_VERTICAL,
-                          horizontal: SUB_DETAIL_HORIZONTAL),
+//                          vertical: Constants.SUB_DETAIL_VERTICAL,
+                          horizontal: Constants.SUB_DETAIL_HORIZONTAL),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Icon(AppIcons.wind,
-                              size: SUB_DETAIL_ICON_SIZE),
-                          SizedBox(width: SUB_DETAIL_DEVIDER_WIDTH),
+                              size: Constants.SUB_DETAIL_ICON_SIZE),
+                          SizedBox(width: Constants.SUB_DETAIL_DEVIDER_WIDTH),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -208,16 +213,16 @@ class _TodayWeatherShortDetailItem extends StatelessWidget {
                               right: AppStyles.borderStyle,
                             )),
                         padding: EdgeInsets.symmetric(
-                            vertical: SUB_DETAIL_VERTICAL,
-                            horizontal: SUB_DETAIL_HORIZONTAL),
+//                            vertical: Constants.SUB_DETAIL_VERTICAL,
+                            horizontal: Constants.SUB_DETAIL_HORIZONTAL),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Icon(
                                 AppIcons.humidity,
-                                size: SUB_DETAIL_ICON_SIZE),
-                            SizedBox(width: SUB_DETAIL_DEVIDER_WIDTH),
+                                size: Constants.SUB_DETAIL_ICON_SIZE),
+                            SizedBox(width: Constants.SUB_DETAIL_DEVIDER_WIDTH),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[Text(Labels.HUMIDITY_TEXT), Text("${today.humidity}")],
@@ -228,16 +233,16 @@ class _TodayWeatherShortDetailItem extends StatelessWidget {
                   Expanded(
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            vertical: SUB_DETAIL_VERTICAL,
-                            horizontal: SUB_DETAIL_HORIZONTAL),
+//                            vertical: Constants.SUB_DETAIL_VERTICAL,
+                            horizontal: Constants.SUB_DETAIL_HORIZONTAL),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Icon(
                                 AppIcons.visibility,
-                                size: SUB_DETAIL_ICON_SIZE),
-                            SizedBox(width: SUB_DETAIL_DEVIDER_WIDTH),
+                                size: Constants.SUB_DETAIL_ICON_SIZE),
+                            SizedBox(width: Constants.SUB_DETAIL_DEVIDER_WIDTH),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[Text(Labels.VISIBILITY_TEXT), Text("${today.visibility}")],
@@ -260,20 +265,44 @@ class _DailyWeatherItem extends StatelessWidget {
     this.minTemp,
     this.maxTemp,
     this.weather,
-    this.weatherCode});
-  String date; // 日期 (i.e: 20180921)
-  String week; // 周几 (i.e: 星期五)
-  String maxTemp; // 最高温度
-  String minTemp; // 最低湿度
-  String weather;
-  String weatherCode;
+    this.weatherCode,
+    this.aqi});
+  final String date; // 日期 (i.e: 20180921)
+  final String week; // 周几 (i.e: 星期五)
+  final String maxTemp; // 最高温度
+  final String minTemp; // 最低湿度
+  final String weather;
+  final String weatherCode;
+  final String aqi;
+
+  String get shortWeek{
+    return Utils.getShortWeek(week, date: date);
+  }
 
   @override
   Widget build(BuildContext context) {
+    Widget _aqiAvatar = null;
+    // AQI avatar define
+    if(aqi != null && aqi.isNotEmpty){
+      _aqiAvatar = new Container(
+        width: Constants.DAY_WEATHER_AQI_WIDTH,
+        height: Constants.DAY_WEATHER_AQI_HEIGHT,
+        alignment: Alignment(0.0, 0.0), // Alignment(0.0, 0.0) 表示居中对齐
+        decoration: BoxDecoration(
+          borderRadius: AppStyles.DAY_WEATHER_AQI_BORDER_STYLE,
+          color: Utils.getQqiColor(aqi)
+        ),
+        child: Text(
+            Utils.getAqiDisplayText(aqi, isReturnShort: true),
+          style: AppStyles.DAY_WEATHER_AQI_TEXT_STYLE,
+        ),
+      );
+    }
+
     return Container(
-      width: 72,
-      height: 100,
-      margin: EdgeInsets.symmetric(vertical: 10.0),
+      width: Constants.DAY_WEATHER_PER_CONTAINER_WIDTH,
+      height: Constants.DAY_WEATHER_CONTAINER_HEIGHT,
+      margin: EdgeInsets.symmetric(vertical: Constants.VERTICAL_SIZE_10),
       decoration: BoxDecoration(
           border: Border(
               right: AppStyles.borderStyle
@@ -281,12 +310,17 @@ class _DailyWeatherItem extends StatelessWidget {
       ),
       child: Column(
         children: <Widget>[
-          Text(Utils.getShortWeek(week, date: date)),
+          Text(shortWeek),
           Text(weather),
-          SizedBox(height: 10.0,),
-          AppIcons.getWeatherIcon(Utils.getWeatherIconByWeatherCode(weatherCode), size: 24.0),
-          SizedBox(height: 3.0,),
-          Text("$minTemp°/$maxTemp°")
+          AppStyles.DIVIDER_HEIGHT_10,
+          AppIcons.getWeatherIcon(
+              Utils.getWeatherIconByWeatherCode(weatherCode,
+                  isDistDayNight: (shortWeek == Labels.TODAY_TEXT)),
+              size: Constants.SMALL_WEATHER_ICON_SIZE),
+          AppStyles.DIVIDER_HEIGHT_3,
+          Text("$minTemp°/$maxTemp°"),
+          AppStyles.DIVIDER_HEIGHT_6,
+          _aqiAvatar!= null? _aqiAvatar : SizedBox(height: Constants.DAY_WEATHER_AQI_HEIGHT)
         ],
       ),
     );
@@ -303,18 +337,18 @@ class _TwentyFourHoursWeatherItem extends StatelessWidget {
     this.temp
   });
 
-  String time;
-  int hour;
-  String weatherCode;
-  String weather;
-  String temp;
+  final String time;
+  final int hour;
+  final String weatherCode;
+  final String weather;
+  final String temp;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 51,
-      height: 75,
-      margin: EdgeInsets.symmetric(vertical: 10.0),
+      width: Constants.HOURS_24_PER_CONTAINER_WIDTH,
+      height: Constants.HOURS_24_CONTAINER_HEIGHT,
+      margin: EdgeInsets.symmetric(vertical: Constants.VERTICAL_SIZE_10),
       child: Column(
         children: <Widget>[
           Text(time),
@@ -329,26 +363,17 @@ class _TwentyFourHoursWeatherItem extends StatelessWidget {
   }
 }
 
-
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>{
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  final ScrollController _scrollController = new ScrollController();
 
-
-  static const double HORIZONTAL_SIZE = 5.0;
-  static const double VERTICAL_SIZE = 8.0;
-
-
-//  Today _today;
-//  List<Future40Days> _future40days;
-//  Future40Days _todayExtraInfo;
-//  List<Future24Hours> _future24hours;
 
   Widget _buildAppBar() {
     return Container(
-      height: 60,
+      height: Constants.APP_BAR_HEIGHT,
       padding: EdgeInsets.symmetric(
-          horizontal: HORIZONTAL_SIZE, vertical: VERTICAL_SIZE),
+          horizontal: Constants.HORIZONTAL_SIZE_5, vertical: Constants.VERTICAL_SIZE_8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -411,7 +436,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMainRegion() {
-    return _TodayWeatherItem(today: widget.today, todayExtraInfo: widget.todayExtraInfo);
+    return _TodayWeatherItem(today: widget.today, todayExtraInfo: widget.todayExtraInfo, height: widget.mainContainerHeight,);
   }
 
   //
@@ -421,11 +446,10 @@ class _HomePageState extends State<HomePage> {
       return _TodayWeatherShortDetailItem(today: widget.today,);
   }
 
-
   Widget _buildDailyContainer(BuildContext context){
 
     return Container(
-      height: 120.0,
+      height: Constants.DAY_WEATHER_MAIN_CONTAINER_HEIGHT,
       decoration: BoxDecoration(
         border: Border(
           bottom: AppStyles.borderStyle
@@ -442,7 +466,8 @@ class _HomePageState extends State<HomePage> {
                 minTemp: item.minTemp,
                 maxTemp: item.maxTemp,
                 weatherCode: item.weather1,
-                weather: item.getWeather1Only
+                weather: item.getWeather1Only,
+                aqi: item.aqi,
             );
 
           }),
@@ -451,7 +476,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _build24HoursContainer(BuildContext context) {
     return Container(
-      height: 100.0,
+      height: Constants.HOURS_24_MAIN_CONTAINER_HEIGHT,
       child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -459,7 +484,6 @@ class _HomePageState extends State<HomePage> {
           itemBuilder: (BuildContext context, int index) {
 
             Future24Hours item = widget.future24hours[index];
-            print("$index:> $item");
             return _TwentyFourHoursWeatherItem(
                 time: item.convertDateTime,
                 hour: item.getHour,
@@ -473,6 +497,12 @@ class _HomePageState extends State<HomePage> {
 
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -483,54 +513,337 @@ class _HomePageState extends State<HomePage> {
     widget.future24hours = data.fc1h_24;
     widget.todayExtraInfo = widget.future40days[0];
     // end init the data
-
-//    WidgetsBinding.instance
-//        .addPostFrameCallback((_) => _refreshIndicatorKey.currentState.show());
   }
 
-  Future<Null> _refreshData(){
-    return WeatherUtils.loadWeatherData(widget.data.cityCode).then((data) {
-      setState(() {
-        widget.updateTime = DateTime.now();
-        widget.today = data.today;
-        widget.future40days = data.fc40;
-        widget.future24hours = data.fc1h_24;
-        widget.todayExtraInfo = widget.future40days[0];
-      });
-      _scaffoldKey.currentState?.showSnackBar(SnackBar(
-            content: Row(
-              children: <Widget>[
-                AppIcons.infoIcon,
-                AppStyles.DIVIDER_WIDTH_5,
-                Text(Labels.DATA_LOADED)
-              ],
-            ),
-            backgroundColor: Colors.black54,
-        ));
+  Future<Null> _refreshData(BuildContext context){
+    _hideBottomSheet(context);
+     return WeatherUtils.loadWeatherData(widget.data.cityCode).then((data) {
+      if(data.errorCode == null){
+        setState(() {
+          widget.updateTime = DateTime.now();
+          widget.today = data.today;
+          widget.future40days = data.fc40;
+          widget.future24hours = data.fc1h_24;
+          widget.todayExtraInfo = widget.future40days[0];
+        });
+      }
+
+//      _scaffoldKey.currentState?.showSnackBar(SnackBar(
+//            content: Row(
+//              children: <Widget>[
+//                data.errorCode != null? AppIcons.erroInfoIcon: AppIcons.infoIcon,
+//                AppStyles.DIVIDER_WIDTH_5,
+//                Text(data.errorCode != null? Labels.DATA_LOAD_FAILED : Labels.DATA_LOADED)
+//              ],
+//            ),
+//            backgroundColor: Colors.black54,
+//        ));
     });
+  }
+
+  /// show bottom sheet
+  void _showBottomSheet(){
+    PersistentBottomSheetController _bottomSheet = _scaffoldKey.currentState.showBottomSheet<void>((
+        BuildContext context) {
+      return _buildMoreWeatherPage(context);
+    });
+
+    if(_bottomSheet != null){
+      setState(() {
+        Future.value(_bottomSheet.closed).then((v) => widget.isBottomSheetDisplayed = false);
+        widget.isBottomSheetDisplayed = true;
+      });
+    }
+  }
+
+  /// hide bottom sheet
+  void _hideBottomSheet(BuildContext context){
+    if(widget.isBottomSheetDisplayed){
+      Navigator.of(context).pop();
+      setState(() {
+        widget.isBottomSheetDisplayed = false;
+      });
+    }
+  }
+
+
+  /// 15 days and 40 days
+  Widget _showMoreWeathers(BuildContext context) {
+    return Container(
+      height: Constants.SHOW_MORE_ICON_CONTAINER_HEIGHT,
+      alignment: Alignment(0.0, 0.0),
+      child: IconButton(
+          icon: Icon(Icons.keyboard_arrow_up),
+          onPressed: () =>  _showBottomSheet()
+      ),
+    );
+  }
+
+  Widget _buildMoreWeatherPage(BuildContext context) {
+    var screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    var _height = screenHeight -
+        (widget.mainContainerHeight + Constants.APP_BAR_HEIGHT +
+            Constants.VERTICAL_SIZE_8);
+    return ShowMoreWeatherPage(
+      height: _height,
+      future40days: widget.future40days,
+      onCollapse: ()=> _hideBottomSheet(context),
+    );
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if(notification.metrics.axisDirection == AxisDirection.down){
+      if(notification is ScrollStartNotification){
+        if(notification.dragDetails == null){
+          setState(() {
+            widget.allowShowMore = false;
+          });
+        }
+      }
+      else if(notification is ScrollEndNotification
+         && widget.allowShowMore) {
+        _showBottomSheet();
+        setState(() {
+          widget.allowShowMore = false;
+        });
+      } else if(notification is ScrollUpdateNotification){
+        print('update....${notification.dragDetails.delta.dy}');
+      }
+      else if(notification is OverscrollNotification){
+        if(notification.dragDetails.delta.dy < 0.0){
+          setState(() {
+            widget.allowShowMore = true;
+          });
+        } else {
+          setState(() {
+            widget.allowShowMore = false;
+          });
+        }
+      }
+    }
+    return false;
+  }
+
+
+  Widget _buildMore(BuildContext context){
+
+    return Container(
+      height: Constants.SHOW_MORE_ICON_CONTAINER_HEIGHT,
+      alignment: Alignment(0.0, 0.0),
+      child: IconButton(
+          icon: Icon(Icons.keyboard_arrow_up),
+          onPressed: (){
+            print('...clicked...');
+            setState(() {
+              widget.isShowMoreWeather = true;
+            });
+          }
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
 
+    double aHeight = Constants.APP_BAR_HEIGHT + Constants.VERTICAL_SIZE_8
+    +Constants.SUB_CONTAINER_HEIGHT + Constants.SUB_DETAIL_VERTICAL
+    +Constants.DAY_WEATHER_MAIN_CONTAINER_HEIGHT + Constants.VERTICAL_SIZE_10
+    + Constants.HOURS_24_MAIN_CONTAINER_HEIGHT +  Constants.VERTICAL_SIZE_10
+    + Constants.SHOW_MORE_ICON_CONTAINER_HEIGHT;
+
+    widget.mainContainerHeight = MediaQuery.of(context).size.height - aHeight+ 5;
+
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       key: _scaffoldKey,
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _refreshData,
-          key: _refreshIndicatorKey,
-          child: ListView(
-            children: <Widget>[
-              _buildAppBar(),
-              _buildMainRegion(),
-              _buildSubDetails(context),
-              _buildDailyContainer(context),
-              _build24HoursContainer(context)
-            ],
-          ),
-        )
+          child: RefreshIndicator(
+              displacement: 10.0,
+              onRefresh: () => _refreshData(context),
+              key: _refreshIndicatorKey,
+              child: GestureDetector(
+
+                /// 透明也响应处理
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () => _hideBottomSheet(context),
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: _handleScrollNotification,
+                    child: ListView(
+                      controller: _scrollController,
+                      // 这句是在list里面的内容不足一屏时，list可能会滑不动，加上就一直都可以滑动
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: <Widget>[
+                        _buildAppBar(),
+                        _buildMainRegion(),
+                        _buildSubDetails(context),
+                        _buildDailyContainer(context),
+                        _build24HoursContainer(context),
+                        _showMoreWeathers(context),
+                      ],
+                    ),
+                  )
+              )
+          )
       ),
     );
+
+//    return Scaffold(
+//      backgroundColor: Colors.blueGrey,
+//      key: _scaffoldKey,
+//      body: SafeArea(
+//          child: RefreshIndicator(
+//              displacement: 10.0,
+//              onRefresh: () => _refreshData(context),
+//              key: _refreshIndicatorKey,
+//              child: NotificationListener<ScrollNotification>(
+//                    onNotification: _handleScrollNotification,
+//                    child: Stack(
+//                      children: <Widget>[
+//                        ListView(
+//                          controller: _scrollController,
+//                          // 这句是在list里面的内容不足一屏时，list可能会滑不动，加上就一直都可以滑动
+//                          physics: const AlwaysScrollableScrollPhysics(),
+//                          children: <Widget>[
+//                            _buildAppBar(),
+//                            _buildMainRegion(),
+//                            _buildSubDetails(context),
+//                            _buildDailyContainer(context),
+//                            _build24HoursContainer(context),
+//                            _buildMore(context),
+//                          ],
+//                        ),
+//
+//                          Positioned(
+//                            bottom: 0.0,
+//                            left: 0.0,
+//                            right: 0.0,
+//                            child: Offstage(
+//                              offstage: !widget.isShowMoreWeather,
+//                              child: Container(
+//                                height: 300.0,
+//                                color: Colors.blue,
+//                              ),
+//                            ),
+//                          )
+//                      ],
+//                    )
+//                  )
+//          )
+//      ),
+//    );
+
+
+//    return Scaffold(
+//      backgroundColor: Colors.blueGrey,
+//      key: _scaffoldKey,
+//      body: SafeArea(
+//          child: RefreshIndicator(
+//              displacement: 10.0,
+//              onRefresh: () => _refreshData(context),
+//              key: _refreshIndicatorKey,
+//              child: BottomExpandView(
+//                height: 330.0,
+//                  children: <Widget>[
+//                    _buildAppBar(),
+//                    _buildMainRegion(),
+//                    _buildSubDetails(context),
+//                    _buildDailyContainer(context),
+//                    _build24HoursContainer(context),
+//                  ],
+//                  expandChild: ShowMoreWeatherPage(
+//                    height: 300.0,
+//                    future40days: widget.future40days
+//                  )
+//
+//              )
+//          )
+//      ),
+//    );
+
+
+//    return Scaffold(
+//      backgroundColor: Colors.blueGrey,
+//      key: _scaffoldKey,
+//      body: SafeArea(
+//          child: EasyRefresh(
+//            autoLoad: false,
+//            key: _easyRefreshKey,
+//            behavior: ScrollOverBehavior(
+////              showLeading: true,
+////              showTrailing: true,
+//            ),
+//            refreshHeader: MaterialHeader(
+//              key: _headerKey,
+//              displacement: 20.0,
+//            ),
+//            refreshFooter: MaterialFooter(
+//                key: _footerKey,
+//                displacement: 10.0,
+//            ),
+//
+////              refreshHeader: ClassicsHeader(
+////                  key: _headerKey,
+////                  refreshText: '下拉刷新',
+////                  refreshReadyText: '释放刷新',
+////                  refreshingText: "正在刷新...",
+////                  refreshedText: '刷新结束',
+////                  moreInfo: '"更新于 %T',
+////                  bgColor: Colors.orange
+////              ),
+////              refreshFooter: ClassicsFooter(
+////                key: _footerKey,
+////                loadText: '上拉加载',
+////                loadReadyText: '释放加载',
+////                loadingText: '正在加载',
+////                loadedText: '加载结束',
+////                noMoreText: '没有更多数据',
+////                moreInfo: '更新于 %T',
+////                bgColor: Colors.transparent,
+////                textColor: Colors.black87,
+////                moreInfoColor: Colors.black54,
+////                showMore: true,
+////              ),
+//
+//            onRefresh: () async {
+//              await Future.delayed(const Duration(microseconds: 10), (){
+//                WeatherUtils.loadWeatherData(widget.data.cityCode).then((data) {
+//                  print("....loaded.....");
+//                  if (data.errorCode == null) {
+//                    setState(() {
+//                      widget.updateTime = DateTime.now();
+//                      widget.today = data.today;
+//                      widget.future40days = data.fc40;
+//                      widget.future24hours = data.fc1h_24;
+//                      widget.todayExtraInfo = widget.future40days[0];
+//                    });
+//                  }
+//                });
+//              });
+//
+//            },
+//
+//              loadMore: (){
+//                  print('....load more....');
+//                  _showBottomSheet();
+//              },
+//            child: ListView(
+//              children: <Widget>[
+//                _buildAppBar(),
+//                _buildMainRegion(),
+//                _buildSubDetails(context),
+//                _buildDailyContainer(context),
+//                _build24HoursContainer(context),
+//                _showMoreWeathers(context),
+//
+//              ],
+//            )
+//
+//          ),
+//      ),
+//    );
+
   }
 }

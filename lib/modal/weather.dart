@@ -172,6 +172,11 @@ class Future40Days{
     }
   }
 
+  // The day and night is same weather
+  bool get isSameWeather {
+    return weather1 == weather2;
+  }
+
   String get getWeather1Only {
     return WeatherConverter.convertWeatherCode(weather1);
   }
@@ -191,6 +196,29 @@ class Future40Days{
     } else if(winPower2 != null && winPower2.isNotEmpty){
       return "$winPower1 转 $winPower2";
     }
+  }
+
+  /// return MM/dd
+  /// eg 12/20
+  get formatDate{
+    if(date != null){
+      return "${date.substring(4,6)}/${date.substring(6,8)}";
+    }
+  }
+
+  get getWeather1{
+    return WeatherConverter.convertWeatherCode(weather1);
+  }
+  get getWeather2{
+    return WeatherConverter.convertWeatherCode(weather2);
+  }
+
+  get getShortWeather1{
+    return WeatherConverter.convertWeatherCode(weather1, convertToShort: true);
+  }
+
+  get getShortWeather2{
+    return WeatherConverter.convertWeatherCode(weather2, convertToShort: true);
   }
 
   @override

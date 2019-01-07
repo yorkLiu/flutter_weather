@@ -12,6 +12,7 @@ class AppIcons{
 
 
   static Icon infoIcon = Icon(Icons.info, color: Colors.green);
+  static Icon erroInfoIcon = Icon(Icons.info, color: Colors.red);
 
 
 
@@ -45,13 +46,18 @@ class AppColors {
   static const AQI_LEVEL_2 = Color(0xffeec500);
   // 轻度污染
   static const AQI_LEVEL_3 = Color(0xffff9900);
-//  static const AQI_LEVEL_3 = Color.fromRGBO(255, 153, 0, 1.0);
+
   // 中度污染
   static const AQI_LEVEL_4 = Color(0xfffa5535);
   // 重度污染
   static const AQI_LEVEL_5 = Color(0xffe31b40);
   // 严重污染
   static const AQI_LEVEL_6 = Color(0xff8e0636);
+
+  static const CALENDAR_TODAY_COLOR= Color(0xff3dbfc3);
+
+  static const WEATHER_CALENDAR_SPECIAL_WEATHER_AVATAR_BG_COLOR=Colors.blueGrey;
+  static const WEATHER_CALENDAR_SPECIAL_WEATHER_AVATAR_F_COLOR=Colors.white;
 
 }
 
@@ -72,17 +78,25 @@ class AppStyles {
 
   static const todayWeatherTextStyle= TextStyle(fontSize: 12.0);
 
-  static const fontSize_12_TextStyle = TextStyle(fontSize: 14.0);
+  static const fontSize_14_TextStyle = TextStyle(fontSize: 14.0);
 
   static const DIVIDER_HEIGHT_3 = SizedBox(height: 3.0);
   static const DIVIDER_HEIGHT_6 = SizedBox(height: 6.0);
   static const DIVIDER_HEIGHT_10 = SizedBox(height: 10.0);
   static const DIVIDER_HEIGHT_15 = SizedBox(height: 15.0);
   static const DIVIDER_WIDTH_5 = SizedBox(width: 5.0);
+  static const DIVIDER_WIDTH_10 = SizedBox(width: 10.0);
 
   static const mainTemperatureTextStyle = TextStyle(
       fontSize: 60.0,
       fontWeight: FontWeight.bold);
+
+  static const WEATHER_CALENDAR_SPECIAL_WEATHER_TEXT_STYLE=TextStyle(
+      fontSize: 12.0
+  );
+
+  static const DAY_WEATHER_AQI_BORDER_STYLE=BorderRadius.all(Radius.circular(10.0));
+  static const DAY_WEATHER_AQI_TEXT_STYLE=TextStyle(color: Colors.white, fontSize: 10.0);
 
   static TextStyle getAQITextStyle(String aqi){
     // 优/AQI: 0 - 50
@@ -113,21 +127,40 @@ class Labels {
   static const TODAY_TEXT = "今天";
 
   static const DATA_LOADED = "数据更新成功";
+  static const DATA_LOAD_FAILED = "网络超时";
+
+  static const TAB_TEXT_15_DAYS = "15天";
+  static const TAB_TEXT_40_DAYS = "40天";
+
+  static const WEEKS = ["日", "一", "二", "三", "四", "五", "六"];
 }
 
 
 class Utils{
 
-  static List<String> _specialWeatherCode = ['00', '01', '03', '13'];
+  static const _specialWeatherCode = ['00', '01', '03', '13'];
+  static const _chineseMonth = {
+    "一月": "正月",
+    "十一月": "冬月",
+    "十二月": "腊月",
+  };
+
+  /// 显示在 40 天 天气预报中
+  /// 如果 weather1 + weather2 中包含以下文字，
+  /// 则 在  40天的 icon 则会以文字显示
+  /// 如: 小雨/暴雨 -> 雨, 雨夹雪 -> 雪, 浓雾/强浓雾 -> 雾 ...
+  static const _specialWeatherTexts = ['雪', '雨', '霾', '雾'];
 
   /// get AQI label
+  /// [aqi_str] aqi value
+  /// [isReturnShort] if true will only return 2 text even the aqi_label length gretter than 2
   /// 优/AQI: 0 - 50
   /// 良/AQI: 51 - 100
   /// 轻度污染/AQI: 101－150
   /// 中度污染/ AQI: 151－200
   /// 重度污染/ AQI: 201－300
   /// 严重污染/ AQI: 大于300
-  static String getAqiDisplayText(String aqi_str) {
+  static String getAqiDisplayText(String aqi_str, {bool isReturnShort: false}) {
     int aqi = int.parse(aqi_str);
     String _aqi_label;
 
@@ -143,6 +176,10 @@ class Utils{
       _aqi_label = "重度污染";
     } else if (aqi > 300) {
       _aqi_label = "严重污染";
+    }
+
+    if(isReturnShort && _aqi_label.length > 2){
+      _aqi_label = _aqi_label.substring(0,2);
     }
 
     return "$_aqi_label";
@@ -184,19 +221,30 @@ class Utils{
   /// n: 表示 夜间
   /// 20 ~ 次日凌晨的 5点 为夜间
   /// 06 ~ 19点为 日间
-  static String getWeatherIconByWeatherCode(String weathercode, {int hour: null}){
-    String _weatherCode = weathercode.startsWith(new RegExp("d|n"))? weathercode.replaceAll(RegExp("d|n"), '') : weathercode;
-    if(_specialWeatherCode.contains(weathercode)){
-      int currentHour = DateTime.now().hour;
-      int minusHour = hour != null ? (24-hour) : (24-currentHour);
+  static String getWeatherIconByWeatherCode(String weathercode,
+      {isDistDayNight: true, forceDay: false, forceNight: false, int hour: null}) {
+    String _weatherCode = weathercode.startsWith(new RegExp("d|n"))
+        ? weathercode.replaceAll(RegExp("d|n"), '')
+        : weathercode;
+    if (_specialWeatherCode.contains(_weatherCode)) {
+      int currentHour = DateTime
+          .now()
+          .hour;
+      int minusHour = hour != null ? (24 - hour) : (24 - currentHour);
       // 20 ~ 次日凌晨的 5点 为夜间
       // 06 ~ 19点为 日间
       bool isNight = minusHour < 5 || minusHour > 18;
 
-      if(isNight){
-        _weatherCode = "n$weathercode";
+      if(forceDay){
+        // if is forceDay, return d00, d$weatherCode
+        _weatherCode = "d$_weatherCode";
+      } else if (forceNight) {
+        // if is forceNight, return n00, n$weatherCode
+        _weatherCode = "n$_weatherCode";
+      } else if (isDistDayNight && isNight) {
+        _weatherCode = "n$_weatherCode";
       } else {
-        _weatherCode = "d$weathercode";
+        _weatherCode = "d$_weatherCode";
       }
     }
 
@@ -211,7 +259,7 @@ class Utils{
       DateTime today = DateTime.now();
       String todayYMD = "${today.year.toString()}${today.month.toString().padLeft(2,'0')}${today.day.toString().padLeft(2,'0')}";
       if(date.trim().compareTo(todayYMD) == 0){
-        return "今天";
+        return Labels.TODAY_TEXT;
       }
     }
 
@@ -220,11 +268,98 @@ class Utils{
     }
     return week;
   }
+
+  /// Get Date YYYYMMDD
+  /// return YYYYMMDDD (eg: 20181222)
+  static String getDateYMD({DateTime date: null}){
+    DateTime _date = date != null ? date: DateTime.now();
+    return "${_date.year.toString()}${_date.month.toString().padLeft(2,'0')}${_date.day.toString().padLeft(2,'0')}";
+  }
+
+  /// 获取 农历
+  /// If 农历节气
+  /// {isAppendNL: true} 是否追加 "农历"
+  /// {allowConvert: false} 是否转换成 农历月 (十一月 > 冬月, 十二月 > 腊月)
+  /// {onlyReturnDay: false} 是否只返回 农历的 日而不返回月 (十一月二十, return 二十)
+  /// return 农历(农历节气)
+  static String getChineseDateInfo(String nl, {String nljq: null,
+    isAppendNL: true, allowConvert: false, onlyReturnDay: false}){
+    String _nlText = isAppendNL? "农历" : "";
+    String _nl = nl;
+    // allowConvert
+    // 是否转换成 农历月 (十一月 > 冬月, 十二月 > 腊月)
+    if(allowConvert){
+      _chineseMonth.forEach((key, value){
+        if(nl.contains(key)){
+          _nl = nl.replaceAll(key, value);
+        }
+      });
+    }
+
+    if(onlyReturnDay){
+      return nl.split("月")[1];
+    }
+
+    if(nljq != null && nljq.isNotEmpty){
+      return "${_nlText}${_nl}(${nljq})";
+    }
+    return "${_nlText}${_nl}";
+  }
+
+  /// Get Special Weather Text
+  /// If the [weatherText] contains one of [_specialWeatherTexts]
+  /// return one of item [_specialWeatherTexts]
+  static String getSpecialWeatherText(String weatherText){
+    for (var i = 0; i < _specialWeatherTexts.length; ++i) {
+      var _s = _specialWeatherTexts[i];
+      if(weatherText.contains(_s)){
+        return _s;
+      }
+    }
+    return null;
+  }
+
+
 }
 
 class Constants {
   static const AppIconFontFamily ="Weather_IconFont";
 
   static const AQI_RADIUS = 15.0;
+  static const WEATHER_ICON_RADIUS = 10.0;
+
+  static const SMALL_WEATHER_ICON_SIZE=24.0;
+  static const WEATHER_CALENDAR_ICON_SIZE=20.0;
+
+
+  static const APP_BAR_HEIGHT = 60.0;
+
+  static const  HORIZONTAL_SIZE_5 = 5.0;
+  static const  VERTICAL_SIZE_8 = 8.0;
+  static const  VERTICAL_SIZE_10 = 10.0;
+
+  static const SUB_CONTAINER_HEIGHT = 90.0;
+  static const SUB_DETAIL_ICON_SIZE = 30.0;
+  static const SUB_DETAIL_HORIZONTAL = 10.0;
+  static const SUB_DETAIL_VERTICAL = 5.0;
+  static const SUB_DETAIL_DEVIDER_WIDTH = 20.0;
+
+
+  static const DAY_WEATHER_MAIN_CONTAINER_HEIGHT = 140.0;
+  static const DAY_WEATHER_CONTAINER_HEIGHT = 130.0;
+  static const DAY_WEATHER_PER_CONTAINER_WIDTH = 72.0;
+  static const DAY_WEATHER_AQI_HEIGHT=16.0;
+  static const DAY_WEATHER_AQI_WIDTH=30.0;
+
+
+  static const HOURS_24_MAIN_CONTAINER_HEIGHT=100.0;
+  static const HOURS_24_CONTAINER_HEIGHT=75.0;
+  static const HOURS_24_PER_CONTAINER_WIDTH=51.0;
+
+  static const SHOW_MORE_ICON_CONTAINER_HEIGHT=24.0;
+
+  static const MORE_WEATHER_TAB_HEIGHT=18.0;
+
+
 
 }

@@ -39,7 +39,7 @@ class WeatherUtils {
         r = await dio.get(url, data: params, options: options);
         break;
       }catch(e){
-        print("Request URL ERROR....");
+        print("Request URL ERROR....wither headers: ${headers.toString()}");
         continue;
       }
     }
@@ -164,10 +164,13 @@ class WeatherUtils {
       Weather _weather = Weather.fromJson(json.decode(data));
       _weather.setCityCode(city_id);
       return _weather;
-    }catch(e){
+    } catch(e){
+      print(">ERRR>>>>>>>>>>");
       Weather _error = Weather();
       if(e.toString().startsWith("NetworkException")){
         _error.errorCode = "NetWorkError";
+      } else {
+        _error.errorCode = "ERROR";
       }
       return _error;
     }
