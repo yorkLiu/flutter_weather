@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Jan 02 10:17:23 CST 2019
+#Tue Jan 29 15:34:36 CST 2019
 56.path=flutter_assets/assets/images/weather_icons/d13.png
 5.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
 42.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
@@ -134,7 +134,7 @@ count=60
 48.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
 28.path=flutter_assets/assets/images/weather_icons/d01.png
 30.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
-10.path=flutter_assets/assets/fonts/iconfont.ttf
+10.path=flutter_assets/assets/images/weather_icons/53.png
 58.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
 13.baseType=DIRECTORY
 50.baseType=DIRECTORY
@@ -201,7 +201,7 @@ count=60
 49.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
 29.path=flutter_assets/assets/images/weather_icons/20.png
 31.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
-11.path=flutter_assets/assets/images/weather_icons/53.png
+11.path=flutter_assets/assets/fonts/iconfont.ttf
 59.base=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/merged_assets/debug/mergeDebugAssets/out
 2.set=ASSET
 39.path=flutter_assets/assets/images/weather_icons/99.png

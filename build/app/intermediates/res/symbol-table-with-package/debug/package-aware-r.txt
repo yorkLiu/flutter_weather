@@ -1,0 +1,5 @@
+com.ly.weather
+drawable launch_background
+mipmap ic_launcher
+mipmap ic_weather
+style LaunchTheme
