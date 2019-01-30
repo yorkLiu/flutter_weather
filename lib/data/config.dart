@@ -211,7 +211,10 @@ Map<String, String> getHeaders(){
 Map<String, String> get_headers(Map<String, String> extra_headers) {
   var headers = getHeaders();
 
-  headers.addAll(extra_headers);
+  if(extra_headers != null){
+    headers.addAll(extra_headers);
+  }
+
   return headers;
 }
 

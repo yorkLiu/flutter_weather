@@ -42,6 +42,12 @@ dependencies:
   # EasyRefresh很容易就能在Flutter应用上实现下拉刷新以及上拉加载操作
   # flutter_easyrefresh: ^1.0.7
 
+  # 高德地图定位flutter组件
+  # https://pub.dartlang.org/packages/amap_location#-readme-tab-
+#  amap_location: ^0.1.2
+#
+#  simple_permissions:
+#  easy_alert:
 
 dev_dependencies:
   flutter_test:
