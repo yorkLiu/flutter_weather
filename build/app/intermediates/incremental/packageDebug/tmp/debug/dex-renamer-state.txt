@@ -1,4 +1,0 @@
-#Wed Jan 30 17:08:06 CST 2019
-base.0=/Users/yongliu/MyDocuments/MyProject/flutter_weather/build/app/intermediates/transforms/dexMerger/debug/0
-path.0=classes.dex
-renamed.0=classes.dex
