@@ -41,4 +41,11 @@ class GEOPlaceMark{
     }
     return "";
   }
+
+  @override
+  String toString() {
+    return 'GEOPlaceMark{country: $country, province: $province, city: $city, district: $district, address: $address, postCode: $postCode, latitude: $latitude, longitude: $longitude}';
+  }
+
+
 }

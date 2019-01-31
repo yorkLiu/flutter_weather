@@ -42,7 +42,7 @@ class WeatherPage extends StatefulWidget {
   }
 
   get getLocation {
-    if(geoPlaceMark != null){
+    if(geoPlaceMark != null && geoPlaceMark.getMainAddress != null && geoPlaceMark.getMainAddress.toString().isNotEmpty){
       return geoPlaceMark.getMainAddress;
     } else {
       return today.cityName;
