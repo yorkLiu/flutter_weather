@@ -255,7 +255,8 @@ class WeatherUtils {
    *
    *
    */
-  static List searchCity(String keyWords, {String province: null, String cityname: null, String strictMatchCityCode:null}) {
+  static List searchCity(String keyWords, {String province: null,
+    String cityname: null, String strictMatchCityCode:null}) {
 
     var resultDatas = [];
     if ((keyWords == null || keyWords.isEmpty)
@@ -288,7 +289,7 @@ class WeatherUtils {
         }
 
         // city
-        if (cityname != null && cityname.isNotEmpty) {
+        if (((province != null && aFind) || (province == null)) && cityname != null && cityname.isNotEmpty) {
           aFind = cityname.indexOf(city_name) == 0 ||
               city_name.indexOf(cityname) == 0 || city_name == cityname;
         }
@@ -408,40 +409,33 @@ class WeatherUtils {
 
 }
 
-
-
-main() {
-  String city_id = '101270102';
-  WeatherUtils._get_weather_info(city_id).then((data){
-    print(data);
-    Weather weather = Weather.fromJson(json.decode(data));
-    print(weather.today);
-    print(weather.fc1h_24);
-    print(weather.fc40);
-  });
-
-
-//    Future<Weather> future = WeatherUtils.loadWeatherData(city_id);
-//    future.then((weather){
-//      print(weather);
-//      print(weather.today);
-//      print(weather.fc1h_24);
-//      print(weather.fc40);
-//    });
-
-//  WeatherUtils.getLocale();
-//  WeatherUtils.loadCityData().then((a){
-//    var s = WeatherUtils.searchCity("0818", strictMatchCityCode: '101270102');
-//    print(s);
-//
-////    WeatherUtils.getCurrentGeoLocale().then((a){
-////      print(a);
-////    });
+//main() {
+//  String city_id = '101270102';
+//  WeatherUtils._get_weather_info(city_id).then((data){
+//    print(data);
+//    Weather weather = Weather.fromJson(json.decode(data));
+//    print(weather.today);
+//    print(weather.fc1h_24);
+//    print(weather.fc40);
 //  });
-
-
-
-
-
-}
+//
+//
+////    Future<Weather> future = WeatherUtils.loadWeatherData(city_id);
+////    future.then((weather){
+////      print(weather);
+////      print(weather.today);
+////      print(weather.fc1h_24);
+////      print(weather.fc40);
+////    });
+//
+////  WeatherUtils.getLocale();
+////  WeatherUtils.loadCityData().then((a){
+////    var s = WeatherUtils.searchCity("0818", province: '四川省', cityname: "龙泉驿区");
+////    print(s);
+////
+//////    WeatherUtils.getCurrentGeoLocale().then((a){
+//////      print(a);
+//////    });
+////  });
+//}
 
