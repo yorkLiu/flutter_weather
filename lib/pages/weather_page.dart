@@ -399,8 +399,9 @@ class _WeatherPageState extends State<WeatherPage>{
         children: <Widget>[
           Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+
                 children: <Widget>[
                   Row(
                     children: <Widget>[
@@ -411,10 +412,14 @@ class _WeatherPageState extends State<WeatherPage>{
                       Text(widget.getLocation),
                     ],
                   ),
-                  Text(
-                    widget.getSubLocation,
-                    style: TextStyle(color: Colors.grey),
-                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 16.0),
+                    child: Text(
+                      widget.getSubLocation,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )
+
                 ],
               )
           ),

@@ -35,11 +35,11 @@ class GEOPlaceMark{
 
   get getSubAddress{
     if(address != null && address.isNotEmpty){
-      if(address.length > 9){
-        return "${address.substring(0,9)}...";
+      if(address.length > 7){
+        return "${address.substring(0,7)}...";
       }
     }
-    return "";
+    return address;
   }
 
   @override

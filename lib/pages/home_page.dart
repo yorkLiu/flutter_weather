@@ -4,6 +4,8 @@ import '../modal/geolocator_placemark.dart';
 import '../data/weather_utils.dart';
 import '../pages/weather_page.dart';
 
+import 'package:amap_location/amap_location.dart';
+
 
 
 
@@ -53,7 +55,7 @@ class _PageSelector extends StatelessWidget {
 }
 
 class _PageSelectors extends StatelessWidget {
-
+  GEOPlaceMark currenLocation = null;
   var cities = ['CURPOSITION', '101270102'];
 
   @override
@@ -70,8 +72,43 @@ class _PageSelectors extends StatelessWidget {
                       GEOPlaceMark geoPlaceMark = null;
 
                       if(city_id == 'CURPOSITION'){
-                        var curPos = await WeatherUtils.getCurrentGeoLocale();
-                        city_id = curPos['city_code'];
+                        await WeatherUtils.loadCityData();
+
+
+                        try {
+                          AMapLocation _amapLocation = await AMapLocationClient.getLocation(true);
+                          if(_amapLocation != null && _amapLocation.province.isNotEmpty){
+                            geoPlaceMark = GEOPlaceMark(
+                                country: _amapLocation.country,
+                                latitude: _amapLocation.latitude,
+                                longitude: _amapLocation.longitude,
+                                province: _amapLocation.province,
+                                city: _amapLocation.city,
+                                district: _amapLocation.district,
+                                address: _amapLocation.street,
+                                postCode: _amapLocation.adcode
+                            );
+
+                            currenLocation = geoPlaceMark;
+
+                            city_id = WeatherUtils.getCity(province: geoPlaceMark.province, cityname: geoPlaceMark.district);
+                            print("City ID: $city_id");
+                          }
+                        }catch(e){
+                          print("Exception....>>>>>>");
+                          print(e);
+
+                          currenLocation = null;
+
+                        } finally {
+                          AMapLocationClient.stopLocation();
+                        }
+
+                        print("currenLocation is null: ${currenLocation == null}");
+
+                        if (currenLocation == null) {
+                          var curPos = await WeatherUtils.getCurrentGeoLocale();
+                          city_id = curPos['city_code'];
                           geoPlaceMark = new GEOPlaceMark(
                               latitude: curPos['lat'],
                               longitude: curPos['lng'],
@@ -81,9 +118,12 @@ class _PageSelectors extends StatelessWidget {
                               district: curPos['district'],
                               postCode: "${curPos['postCode']}"
                           );
+                        }
                       }
 
                       Weather weather = await WeatherUtils.loadWeatherData(city_id);
+
+                      print(geoPlaceMark);
                       return _WeatherData(weather: weather, geoPlaceMark: geoPlaceMark);
                     }),
                     builder: (BuildContext context, AsyncSnapshot<_WeatherData> weatherState) {
@@ -117,17 +157,34 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
   @override
   void initState() {
-    initData();
+
     super.initState();
+    initData();
+    initLocation();
 
   }
 
-  void initData(){
-    WeatherUtils.loadCityData();
+  initLocation() async{
+
+    AMapLocationClient.setApiKey("92db4c9f65225920347c5e5e51fd4cc2");
+    await AMapLocationClient.startup(new AMapLocationOption( desiredAccuracy:CLLocationAccuracy.kCLLocationAccuracyHundredMeters ));
+
+  }
+
+  void initData() async{
+    await WeatherUtils.loadCityData();
+  }
+
+  @override
+  void dispose() {
+    AMapLocationClient.shutdown();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
+
 
     return _PageSelectors();
 

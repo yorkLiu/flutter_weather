@@ -44,7 +44,7 @@ dependencies:
 
   # 高德地图定位flutter组件
   # https://pub.dartlang.org/packages/amap_location#-readme-tab-
-#  amap_location: ^0.1.2
+  amap_location: ^0.1.2
 #
 #  simple_permissions:
 #  easy_alert:

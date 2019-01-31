@@ -44,10 +44,10 @@ android {
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-//        manifestPlaceholders = [
-//                AMAP_KEY : "92db4c9f65225920347c5e5e51fd4cc2", /// 高德地图key
-//                amap_location : "92db4c9f65225920347c5e5e51fd4cc2", /// 高德地图key
-//        ]
+        manifestPlaceholders = [
+                AMAP_KEY : "92db4c9f65225920347c5e5e51fd4cc2", /// 高德地图key
+                amap_location : "92db4c9f65225920347c5e5e51fd4cc2", /// 高德地图key
+        ]
 
     }
 
@@ -65,8 +65,12 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
 //            signingConfig signingConfigs.debug
-            signingConfig signingConfigs.release
-//            signingConfig signingConfigs[localProperties.getProperty('flutter.buildMode')]
+            def flutterBuildMode = localProperties.getProperty('flutter.buildMode')
+            if(flutterBuildMode != null && flutterBuildMode == 'release'){
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
         }
     }
 }
