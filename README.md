@@ -1,5 +1,7 @@
 # Flutter 实现 天气预报
 
+## 更多关于 Flutter 的plugin, Idea, 用法
+[请参见 awesome-flutter](awesome-flutter.md)
 
 ## Getting Started
 
@@ -138,6 +140,7 @@ Data data = Data.fromJson(json.decode(jsonValue));
 * [udacity-course github代码](https://github.com/flutter/udacity-course) udacity上的Flutter课程，Google开发的[课程地址](https://www.udacity.com/course/build-native-mobile-apps-with-flutter--ud905)
 * [仿知乎的UI](https://github.com/HackSoul/zhihu-flutter)
 * [fluro 路由库](https://github.com/theyakka/fluro) 很早就用过了
+* [更多关于 Flutter 的plugin, Idea, 用法 请参见 awesome-flutter](awesome-flutter.md)
 
 ## 每日关注
 * [github dart trending](https://github.com/trending/dart?since=daily)
