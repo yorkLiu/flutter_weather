@@ -413,7 +413,7 @@ class _WeatherPageState extends State<WeatherPage>{
                     ],
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 16.0),
+                    margin: EdgeInsets.only(left: 18.0),
                     child: Text(
                       widget.getSubLocation,
                       style: TextStyle(color: Colors.grey),

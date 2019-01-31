@@ -27,10 +27,12 @@ class GEOPlaceMark{
 
 
   get getMainAddress{
+    String c = city;
     if(district != null && district.isNotEmpty){
-      return "$city | $district";
+      c =  "$city | $district";
     }
-    return city;
+
+    return c.length > 9?c.substring(0,9): c;
   }
 
   get getSubAddress{
