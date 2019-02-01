@@ -56,7 +56,7 @@ class _PageSelector extends StatelessWidget {
 
 class _PageSelectors extends StatelessWidget {
   GEOPlaceMark currenLocation = null;
-  var cities = ['CURPOSITION', '101270102'];
+  var cities = ['CURPOSITION', '101270102','101270608'];
 
   @override
   Widget build(BuildContext context) {
