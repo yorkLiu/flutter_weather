@@ -251,7 +251,7 @@ class WeatherUtils {
    * searchCity(null, province: '四川') ==> [{ac: 101270101, n: 成都, pv: 四川}, {ac: 101270102, n: 龙泉驿, pv: 四川}...]
    * searchCity(null, cityname: '成都') == > [{ac: 101270101, n: 成都, pv: 四川}, {ac: 10127010106A, n: 成都大熊猫繁育研究基地, pv: 四川省景点},...]
    * searchCity(null, province: '四川', cityname: '成都') ==> [{ac: 101270101, n: 成都, pv: 四川}]
-   * searchCity(null, strictMatchCityCode: '101270101') ==> [{ac: 101270101, n: 成都, pv: 四川}]
+   * searchCity('101270101', strictMatchCityCode: '101270101') ==> [{ac: 101270101, n: 成都, pv: 四川}]
    *
    *
    */
@@ -366,8 +366,6 @@ class WeatherUtils {
   static String getCity({String keyWords: null, String province: null,
     String cityname: null, String strictMatchCityCode:null}){
     List cities = searchCity(keyWords, province: province, cityname: cityname, strictMatchCityCode: strictMatchCityCode);
-    print("cityies:");
-    print(cities.length);
     return cities.length > 0? cities[0]['ac']: null;
   }
 
@@ -414,39 +412,38 @@ class WeatherUtils {
       'city_code': city_code
     };
   }
-
 }
 
-main() {
-  String city_id = '101270102';
-  WeatherUtils._get_weather_info(city_id).then((data){
-    print(data);
-    Weather weather = Weather.fromJson(json.decode(data));
-    print(weather.today);
-    print(weather.fc1h_24);
-    print(weather.fc40);
-  });
-
-
-//    Future<Weather> future = WeatherUtils.loadWeatherData(city_id);
-//    future.then((weather){
-//      print(weather);
-//      print(weather.today);
-//      print(weather.fc1h_24);
-//      print(weather.fc40);
-//    });
-
-//  WeatherUtils.getLocale();
-  WeatherUtils.loadCityData().then((a){
-//    var s = WeatherUtils.searchCity("0818", province: '四川省', cityname: "龙泉驿区");
-//    print(s);
-
-    var r = WeatherUtils.getCity(province: '四川省', cityname: "龙泉驿区");
-    print(r);
-
-//    WeatherUtils.getCurrentGeoLocale().then((a){
-//      print(a);
-//    });
-  });
-}
+//main() {
+//  String city_id = '101270102';
+//  WeatherUtils._get_weather_info(city_id).then((data){
+//    print(data);
+//    Weather weather = Weather.fromJson(json.decode(data));
+//    print(weather.today);
+//    print(weather.fc1h_24);
+//    print(weather.fc40);
+//  });
+//
+//
+////    Future<Weather> future = WeatherUtils.loadWeatherData(city_id);
+////    future.then((weather){
+////      print(weather);
+////      print(weather.today);
+////      print(weather.fc1h_24);
+////      print(weather.fc40);
+////    });
+//
+////  WeatherUtils.getLocale();
+//  WeatherUtils.loadCityData().then((a){
+////    var s = WeatherUtils.searchCity("0818", province: '四川省', cityname: "龙泉驿区");
+////    print(s);
+//
+//    var r = WeatherUtils.getCity(province: '四川省', cityname: "龙泉驿区");
+//    print(r);
+//
+////    WeatherUtils.getCurrentGeoLocale().then((a){
+////      print(a);
+////    });
+//  });
+//}
 

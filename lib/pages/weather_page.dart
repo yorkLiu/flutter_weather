@@ -9,11 +9,13 @@ import '../modal/geolocator_placemark.dart';
 class WeatherPage extends StatefulWidget {
   WeatherPage({Key key,
     this.data,
-    this.geoPlaceMark
+    this.geoPlaceMark,
+    this.onNavigation
   }): super(key: key);
 
   final Weather data;
   final GEOPlaceMark geoPlaceMark;
+  final NavigationCallback onNavigation;
 
   ////// global config [start] ///////////
   double mainContainerHeight = 200.0;
@@ -50,7 +52,7 @@ class WeatherPage extends StatefulWidget {
   }
 
   get getSubLocation {
-    if(geoPlaceMark != null){
+    if(geoPlaceMark != null && geoPlaceMark.getSubAddress != null && geoPlaceMark.getSubAddress.toString().isNotEmpty){
       return geoPlaceMark.getSubAddress;
     }
     return "";
@@ -387,8 +389,7 @@ class _WeatherPageState extends State<WeatherPage>{
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = new ScrollController();
 
-
-  Widget _buildAppBar() {
+  Widget _buildAppBar(BuildContext context) {
     return Container(
       height: Constants.APP_BAR_HEIGHT,
       padding: EdgeInsets.symmetric(
@@ -447,8 +448,22 @@ class _WeatherPageState extends State<WeatherPage>{
                 child: IconButton(
                   icon: Icon(Icons.menu, color: Colors.white),
                   onPressed: () {
-                    print(">>>>>The Menu button was clicked.");
-                    _refreshIndicatorKey.currentState.show();
+                    widget.onNavigation();
+                    //Navigator.pushNamed(context, "/search");
+//                    _navigateToSearchPage();
+
+//                    Navigator.of(context).pushNamed("/search");
+//                    Navigator.push(context, MaterialPageRoute(
+//                      settings: RouteSettings(
+//                          isInitialRoute: false,
+//                      ),
+//
+//                      builder: (context){
+//                        return SearchCity();
+//                      }
+//                    ));
+//                    print(">>>>>The Menu button was clicked.");
+//                    _refreshIndicatorKey.currentState.show();
                   },
                 ),
               )
@@ -531,11 +546,11 @@ class _WeatherPageState extends State<WeatherPage>{
     super.initState();
 
     // init the data
-    var data = widget.data;
-    widget.today = data.today;
-    widget.future40days = data.fc40;
-    widget.future24hours = data.fc1h_24;
-    widget.todayExtraInfo = widget.future40days[0];
+//    var data = widget.data;
+//    widget.today = data.today;
+//    widget.future40days = data.fc40;
+//    widget.future24hours = data.fc1h_24;
+//    widget.todayExtraInfo = widget.future40days[0];
     // end init the data
   }
 
@@ -651,24 +666,6 @@ class _WeatherPageState extends State<WeatherPage>{
     return false;
   }
 
-
-  Widget _buildMore(BuildContext context){
-
-    return Container(
-      height: Constants.SHOW_MORE_ICON_CONTAINER_HEIGHT,
-      alignment: Alignment(0.0, 0.0),
-      child: IconButton(
-          icon: Icon(Icons.keyboard_arrow_up),
-          onPressed: (){
-            print('...clicked...');
-            setState(() {
-              widget.isShowMoreWeather = true;
-            });
-          }
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -679,6 +676,13 @@ class _WeatherPageState extends State<WeatherPage>{
     + Constants.SHOW_MORE_ICON_CONTAINER_HEIGHT;
 
     widget.mainContainerHeight = MediaQuery.of(context).size.height - aHeight+ 5;
+
+    // init the data
+    var data = widget.data;
+    widget.today = data.today;
+    widget.future40days = data.fc40;
+    widget.future24hours = data.fc1h_24;
+    widget.todayExtraInfo = widget.future40days[0];
 
     return Scaffold(
       backgroundColor: Colors.blueGrey,
@@ -701,7 +705,7 @@ class _WeatherPageState extends State<WeatherPage>{
                               // 这句是在list里面的内容不足一屏时，list可能会滑不动，加上就一直都可以滑动
                               physics: const AlwaysScrollableScrollPhysics(),
                               children: <Widget>[
-                                _buildAppBar(),
+                                _buildAppBar(context),
                                 _buildMainRegion(),
                                 _buildSubDetails(context),
                                 _buildDailyContainer(context),
@@ -724,160 +728,6 @@ class _WeatherPageState extends State<WeatherPage>{
               )
           )
       );
-
-    return Scaffold(
-      backgroundColor: Colors.blueGrey,
-      key: _scaffoldKey,
-      body: SafeArea(
-          child: RefreshIndicator(
-              displacement: 10.0,
-              onRefresh: () => _refreshData(context),
-              key: _refreshIndicatorKey,
-              child: NotificationListener<ScrollNotification>(
-                    onNotification: _handleScrollNotification,
-                    child: Stack(
-                      children: <Widget>[
-                        ListView(
-                          controller: _scrollController,
-                          // 这句是在list里面的内容不足一屏时，list可能会滑不动，加上就一直都可以滑动
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          children: <Widget>[
-                            _buildAppBar(),
-                            _buildMainRegion(),
-                            _buildSubDetails(context),
-                            _buildDailyContainer(context),
-                            _build24HoursContainer(context),
-                            _buildMore(context),
-                          ],
-                        ),
-                          Positioned(
-                            bottom: 15.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Offstage(
-                              offstage: !widget.isShowMoreWeather,
-                              child: Container(
-                                height: 300.0,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          )
-                      ],
-                    )
-                  )
-          )
-      ),
-    );
-
-
-//    return Scaffold(
-//      backgroundColor: Colors.blueGrey,
-//      key: _scaffoldKey,
-//      body: SafeArea(
-//          child: RefreshIndicator(
-//              displacement: 10.0,
-//              onRefresh: () => _refreshData(context),
-//              key: _refreshIndicatorKey,
-//              child: BottomExpandView(
-//                height: 330.0,
-//                  children: <Widget>[
-//                    _buildAppBar(),
-//                    _buildMainRegion(),
-//                    _buildSubDetails(context),
-//                    _buildDailyContainer(context),
-//                    _build24HoursContainer(context),
-//                  ],
-//                  expandChild: ShowMoreWeatherPage(
-//                    height: 300.0,
-//                    future40days: widget.future40days
-//                  )
-//
-//              )
-//          )
-//      ),
-//    );
-
-
-//    return Scaffold(
-//      backgroundColor: Colors.blueGrey,
-//      key: _scaffoldKey,
-//      body: SafeArea(
-//          child: EasyRefresh(
-//            autoLoad: false,
-//            key: _easyRefreshKey,
-//            behavior: ScrollOverBehavior(
-////              showLeading: true,
-////              showTrailing: true,
-//            ),
-//            refreshHeader: MaterialHeader(
-//              key: _headerKey,
-//              displacement: 20.0,
-//            ),
-//            refreshFooter: MaterialFooter(
-//                key: _footerKey,
-//                displacement: 10.0,
-//            ),
-//
-////              refreshHeader: ClassicsHeader(
-////                  key: _headerKey,
-////                  refreshText: '下拉刷新',
-////                  refreshReadyText: '释放刷新',
-////                  refreshingText: "正在刷新...",
-////                  refreshedText: '刷新结束',
-////                  moreInfo: '"更新于 %T',
-////                  bgColor: Colors.orange
-////              ),
-////              refreshFooter: ClassicsFooter(
-////                key: _footerKey,
-////                loadText: '上拉加载',
-////                loadReadyText: '释放加载',
-////                loadingText: '正在加载',
-////                loadedText: '加载结束',
-////                noMoreText: '没有更多数据',
-////                moreInfo: '更新于 %T',
-////                bgColor: Colors.transparent,
-////                textColor: Colors.black87,
-////                moreInfoColor: Colors.black54,
-////                showMore: true,
-////              ),
-//
-//            onRefresh: () async {
-//              await Future.delayed(const Duration(microseconds: 10), (){
-//                WeatherUtils.loadWeatherData(widget.data.cityCode).then((data) {
-//                  print("....loaded.....");
-//                  if (data.errorCode == null) {
-//                    setState(() {
-//                      widget.updateTime = DateTime.now();
-//                      widget.today = data.today;
-//                      widget.future40days = data.fc40;
-//                      widget.future24hours = data.fc1h_24;
-//                      widget.todayExtraInfo = widget.future40days[0];
-//                    });
-//                  }
-//                });
-//              });
-//
-//            },
-//
-//              loadMore: (){
-//                  print('....load more....');
-//                  _showBottomSheet();
-//              },
-//            child: ListView(
-//              children: <Widget>[
-//                _buildAppBar(),
-//                _buildMainRegion(),
-//                _buildSubDetails(context),
-//                _buildDailyContainer(context),
-//                _build24HoursContainer(context),
-//                _showMoreWeathers(context),
-//
-//              ],
-//            )
-//
-//          ),
-//      ),
-//    );
 
   }
 }

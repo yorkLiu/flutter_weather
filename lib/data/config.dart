@@ -258,14 +258,14 @@ class WeatherConverter{
 }
 
 
-void main(){
-  String weathercode="n01";
-  String _weatherCode = weathercode.startsWith(new RegExp("d|n"))? weathercode.replaceAll(RegExp("d|n"), '') : weathercode;
-  print(_weatherCode);
-
-  var date = DateTime.parse("2018-12-22");
-
-  print(date.weekday);
-  print(date.weekday~/7 ==1);
-}
+//void main(){
+//  String weathercode="n01";
+//  String _weatherCode = weathercode.startsWith(new RegExp("d|n"))? weathercode.replaceAll(RegExp("d|n"), '') : weathercode;
+//  print(_weatherCode);
+//
+//  var date = DateTime.parse("2018-12-22");
+//
+//  print(date.weekday);
+//  print(date.weekday~/7 ==1);
+//}
 

@@ -44,10 +44,14 @@ dependencies:
 
   # 高德地图定位flutter组件
   # https://pub.dartlang.org/packages/amap_location#-readme-tab-
+  # https://github.com/best-flutter/flutter_amap_location
+  # https://github.com/KinsomyJS/muses_weather_flutter
   amap_location: ^0.1.2
-#
-#  simple_permissions:
-#  easy_alert:
+
+  # shared preferences plugin
+  # https://pub.dartlang.org/packages/shared_preferences#-installing-tab-
+  # https://github.com/flutter/plugins/tree/master/packages/shared_preferences
+  shared_preferences: ^0.5.1+1
 
 dev_dependencies:
   flutter_test:

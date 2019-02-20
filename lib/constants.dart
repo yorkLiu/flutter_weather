@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// define the navigation call back function
+typedef NavigationCallback = void Function();
+
 class AppIcons{
   static const _asset_base_path = "assets/images/weather_icons";
 
@@ -58,6 +61,8 @@ class AppColors {
 
   static const WEATHER_CALENDAR_SPECIAL_WEATHER_AVATAR_BG_COLOR=Colors.blueGrey;
   static const WEATHER_CALENDAR_SPECIAL_WEATHER_AVATAR_F_COLOR=Colors.white;
+
+  static const SEARCH_PAGE_COLOR = Color(0xff848d95);
 
 }
 
@@ -324,6 +329,12 @@ class Utils{
 
 class Constants {
   static const AppIconFontFamily ="Weather_IconFont";
+
+  // 高德地图 API Key [start]
+  static const AMPA_LOCATION_KEY_ANDROID='92db4c9f65225920347c5e5e51fd4cc2';
+  // IOS 现在不可用，如果要用IOS, 则需要重新申请 IOS 版本的 API Key
+  static const AMPA_LOCATION_KEY_IOS='92db4c9f65225920347c5e5e51fd4cc2';
+  // 高德地图 API Key [end]
 
   static const AQI_RADIUS = 15.0;
   static const WEATHER_ICON_RADIUS = 10.0;
