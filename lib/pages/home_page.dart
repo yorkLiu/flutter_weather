@@ -68,9 +68,12 @@ class WeatherHomePage extends StatefulWidget {
 }
 
 class _WeatherHomePageState extends State<WeatherHomePage> with TickerProviderStateMixin {
+
+  static const _CURPOSITION = 'CURPOSITION';
+
   TabController _tabController;
   GEOPlaceMark _currenLocation = null;
-  List<String> _cities = ['CURPOSITION'];
+  List<String> _cities = [_CURPOSITION];
   List<Widget> _tabs = [];
 
   @override
@@ -102,13 +105,15 @@ class _WeatherHomePageState extends State<WeatherHomePage> with TickerProviderSt
     Utils.getPreferCities().then((List<String> _list){
       bool _initPage = isInit;
       if(isInit){
-        if(_cities.length > 1){
+        if(_list != null){
+          _cities.clear();
+        } else if(_cities.length > 1){
           _cities.removeRange(1, -1);
         }
       } else {
         // if the _cities is equals the shared prefer data
         // then do not re-init the weather page.
-        if(!listEquals(_cities, _list)){
+        if(_list != null && !listEquals(_cities, _list)){
           _initPage = true;
           _cities.clear();
         }
@@ -117,8 +122,12 @@ class _WeatherHomePageState extends State<WeatherHomePage> with TickerProviderSt
       if(_initPage){
         _tabs.clear();
 
-        if(_list.length > 0){
-          _cities.addAll(_list);
+        if(!_cities.contains(_CURPOSITION)){
+          _cities.add(_CURPOSITION);
+        }
+
+        if(_list != null && _list.length > 1){
+          _cities.addAll(_list.getRange(1, _list.length));
         }
 
         for (var city_id in _cities) {

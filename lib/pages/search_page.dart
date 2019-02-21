@@ -13,7 +13,6 @@ class SearchCity extends StatefulWidget {
 
 class _SearchCityState extends State<SearchCity> {
 
-
   static const EMPTY_TEXT='';
   static RegExp CHARACTER_NUMBER_REGEX= new RegExp("[0-9]|[a-zA-Z]");
   final TextEditingController _filter = new TextEditingController();
@@ -21,8 +20,6 @@ class _SearchCityState extends State<SearchCity> {
 
   List _searchResults = [];
   List _prefers = [];
-
-  String _selected;
 
 
   _SearchCityState(){
@@ -172,7 +169,6 @@ class _SearchCityState extends State<SearchCity> {
           title: Text('${item['n']}'),
           trailing: Text('${item['pv']}'),
           onTap: (){
-
             setState(() {
               _prefers.add(item);
             });
@@ -195,6 +191,7 @@ class _SearchCityState extends State<SearchCity> {
     );
   }
 
+  /// search city by _searchText
   void _searchCity(){
     _searchResults.clear();
     if(_searchText.isNotEmpty){
@@ -204,13 +201,13 @@ class _SearchCityState extends State<SearchCity> {
     }
   }
 
+  /// load shared preference data
   _loadPreference() async{
     List _list = await Utils.getPreferCities();
     List _cities = [];
 
     for (var _r in _list) {
       List a = WeatherUtils.searchCity(_r, strictMatchCityCode: _r);
-      print(a);
       _cities.addAll(a);
     }
 

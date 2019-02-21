@@ -406,7 +406,7 @@ class _WeatherPageState extends State<WeatherPage>{
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Icon(AppIcons.location1, size: 16.0),
+                      Icon(widget.geoPlaceMark != null? AppIcons.location1 : Icons.location_city, size: 16.0),
                       SizedBox(
                         width: 3.0,
                       ),
@@ -648,9 +648,8 @@ class _WeatherPageState extends State<WeatherPage>{
         setState(() {
           widget.allowShowMore = false;
         });
-      } else if(notification is ScrollUpdateNotification){
-        print('update....${notification.dragDetails.delta.dy}');
       }
+
       else if(notification is OverscrollNotification){
         if(notification.dragDetails.delta.dy < 0.0){
           setState(() {
@@ -693,8 +692,7 @@ class _WeatherPageState extends State<WeatherPage>{
               onRefresh: () => _refreshData(context),
               key: _refreshIndicatorKey,
               child: GestureDetector(
-                /// 透明也响应处理
-                  behavior: HitTestBehavior.translucent,
+                  behavior: HitTestBehavior.translucent, /// 透明也响应处理
                   onTap: () => _hideBottomSheet(context),
                   child: NotificationListener<ScrollNotification>(
                     onNotification: _handleScrollNotification,
@@ -710,7 +708,6 @@ class _WeatherPageState extends State<WeatherPage>{
                                 _buildSubDetails(context),
                                 _buildDailyContainer(context),
                                 _build24HoursContainer(context),
-
                               ]
                           ),
 
@@ -728,6 +725,5 @@ class _WeatherPageState extends State<WeatherPage>{
               )
           )
       );
-
   }
 }
