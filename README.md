@@ -1,7 +1,7 @@
 # Flutter 实现 天气预报
 
 ## 效果如下
-<a target="_blank" rel="noopener noreferrer" href="/yorkLiu/flutter_weather/blob/master/screenshots/demo.gif"><img src="/yorkLiu/flutter_weather/raw/master/screenshots/demo.gif" alt="" style="width=210px"></a>
+<a target="_blank" rel="noopener noreferrer" href="/yorkLiu/flutter_weather/blob/master/screenshots/demo.gif"><img src="/yorkLiu/flutter_weather/raw/master/screenshots/demo.gif" alt="" width="210px" style="width:210px"></a>
 
 
 ## 更多关于 Flutter 的plugin, Idea, 用法
