@@ -1,7 +1,7 @@
 # Flutter 实现 天气预报
 
 ## 效果如下
-![](./screenshots/demo.gif | width=210)
+![](./screenshots/demo.gif) <!-- .element height="380px" width="210px" -->
 
 
 ## 更多关于 Flutter 的plugin, Idea, 用法
