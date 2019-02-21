@@ -1,6 +1,7 @@
 # Flutter 实现 天气预报
+- [Release Version 1.0.0](https://github.com/yorkLiu/flutter_weather/releases/download/v1.0.0/weather_release_1.0.0.apk)
 
-## 效果如下 [![Release V_1.0.0](https://github.com/yorkLiu/flutter_weather/releases/download/v1.0.0/weather_release_1.0.0.apk)](https://github.com/yorkLiu/flutter_weather/releases/download/v1.0.0/weather_release_1.0.0.apk)
+## 效果如下
 <a target="_blank" rel="noopener noreferrer" href="screenshots/demo.gif"><img src="screenshots/demo.gif" alt="" width="210px" style="width:210px"></a>
 
 
