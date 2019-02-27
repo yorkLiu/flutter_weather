@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../data/weather_utils.dart' show WeatherUtils;
-import '../constants.dart' show AppColors;
-import 'package:shared_preferences/shared_preferences.dart';
 import '../data/utils.dart' show Utils;
 import '../constants.dart' show AppIcons;
 

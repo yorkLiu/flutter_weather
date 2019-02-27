@@ -7,7 +7,7 @@ description: Using Flutter implement the Weather App
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -52,6 +52,10 @@ dependencies:
   # https://pub.dartlang.org/packages/shared_preferences#-installing-tab-
   # https://github.com/flutter/plugins/tree/master/packages/shared_preferences
   shared_preferences: ^0.5.1+1
+
+  # 手机网络状态监听组件
+  # https://pub.dartlang.org/packages/connectivity
+  connectivity: ^0.4.2
 
 dev_dependencies:
   flutter_test:

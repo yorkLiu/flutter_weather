@@ -10,6 +10,10 @@ import '../constants.dart' show Constants;
 
 import 'package:amap_location/amap_location.dart';
 
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
+//import 'dart:async';
+
 Function listEquals = const ListEquality().equals;
 
 
@@ -69,6 +73,10 @@ class WeatherHomePage extends StatefulWidget {
 
 class _WeatherHomePageState extends State<WeatherHomePage> with TickerProviderStateMixin {
 
+//  String _connectionStatus = 'Unknown';
+  final Connectivity _connectivity = Connectivity();
+//  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
   static const _CURPOSITION = 'CURPOSITION';
 
   TabController _tabController;
@@ -78,9 +86,19 @@ class _WeatherHomePageState extends State<WeatherHomePage> with TickerProviderSt
 
   @override
   void initState() {
-    _initData();
+    _initConnectivity().then((bool connected){
+      if(connected){
+        _initData();
+        _buildPageFromPrefers();
+      }
+    });
+
     _initLocation();
-    _buildPageFromPrefers();
+//    _connectivitySubscription =
+//        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+//          setState(() => _connectionStatus = result.toString());
+//        });
+
 
     super.initState();
   }
@@ -95,6 +113,55 @@ class _WeatherHomePageState extends State<WeatherHomePage> with TickerProviderSt
 
   void _initData() async{
     await WeatherUtils.loadCityData();
+  }
+
+  //平台消息是异步的，所以我们用异步方法初始化。
+  Future<bool> _initConnectivity() async {
+    String connectionStatus;
+    //平台消息可能会失败，因此我们使用Try/Catch PlatformException。
+    try {
+      connectionStatus = (await _connectivity.checkConnectivity()).toString();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      connectionStatus = 'Failed to get connectivity.';
+    }
+
+//    print("****connectionStatus:$connectionStatus");
+//    if(connectionStatus == ConnectivityResult.wifi.toString()){
+//      String wifiName = await _connectivity.getWifiName();
+//      String wifiIP = await _connectivity.getWifiIP();
+//      print("wifi name: $wifiName with IP: $wifiIP");
+//    }
+
+    // 如果在异步平台消息运行时从树中删除了该小部件，e
+    // 那么我们希望放弃回复，而不是调用setstate来更新我们不存在的外观。
+    if (!mounted || connectionStatus == ConnectivityResult.none.toString()) {
+      showDialog<void>(
+          context: context,
+          builder: (BuildContext context){
+            return Theme(
+              data: ThemeData.light().copyWith(
+                dialogBackgroundColor: Colors.white,
+                primaryColor: Colors.black
+              ),
+              child: AlertDialog(
+                title: Text("无法访问网络"),
+                content: Text('请检查您的网络, 如:打开"移动网络"或者连接可用的"WIFI"'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('退出'),
+                    onPressed: (){
+                      exit(0);
+                    },
+                  )
+                ],
+              ),
+            );
+      });
+      return false;
+    }
+
+    return true;
   }
 
   /// build the weather pages from read the shared preference data
