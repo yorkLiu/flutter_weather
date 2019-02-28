@@ -14,94 +14,8 @@ For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
 
 ## Dart/Flutter 序列化 / 反序列化
-### 序列化 / 反序列化 所依赖的 Packages
-- [json_annotation](https://pub.dartlang.org/packages/json_annotation)
-- [json_serializable](https://pub.dartlang.org/packages/json_serializable)
+- [请参见 Dart Json与序列化](Dart-serializable-unserializable.md)
 
-如果你要使用 `Dart`自动的『序列 / 反序列化』还需要 **1** 个额外的 `Dependency`
-- [build_runner](https://pub.dartlang.org/packages/build_runner) 用来生成 『序列 / 反序列化』 文件的
-
-### Example 『序列 / 反序列化』
-1. Create Class
-```dart
-import 'package:json_annotation/json_annotation.dart';
-
-part 'data.g.dart';  // 这里IDEA会提示报错，暂不用管，因为这个文件目前还不存在，这个文件是交给dart自动生成的
-
-@JsonSerializable()  // 为Class 添加 Json 序列化 annotation
-Class Data {
-    // 定义 class的构造方法
-    Data({this.name, this.email});
-
-    String name;
-    String email;
-}
-```
-2. Run Command
-- `flutter packages pub run build_runner build`  每次手动生成，假如 Data Class中增加或者删除了property, 则需要手动运行改命令
-- `flutter packages pub run build_runner watch`  使用_watcher_可以使我们的源代码生成的过程更加方便。它会监视我们项目中文件的变化，并在需要时自动构建必要的文件; 只需启动一次观察器，然后并让它在后台运行，这是安全的.
-
-3. Run 完command之后，在 `data.dart`文件同级的下，会自动成一个名为 `data.g.dart`的文件
-`data.g.dart` 文件中就是定义的是 Json 序列化及反序列化的方法
-```dart
-// GENERATED CODE - DO NOT MODIFY BY HAND
-part of 'data.dart';
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-Data _$DataFromJson(Map<String, dynamic> json) {
-  return Today(
-      name: json['name'] as String,
-      email: json['email'] as String);
-  }
-
-Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
-      'name': instance.name,
-      'email': instance.email,
-  };
-```
-
-4. 在 `data.dart` 中的 `Data` class中添加『序列 / 反序列』两个方法
-```dart
-// 反序列化 json => dart object
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
-
-  // 序列化 dart object => json
-  Map<String, dynamic> toJson() => _$DataToJson(this);
-```
-`_$DataFromJson`及 `_$DataToJson` 两个方法都是 `data.g.dart`文件中自动生成的!
-
-```dart
-import 'package:json_annotation/json_annotation.dart';
-
-part 'data.g.dart';
-
-@JsonSerializable()
-Class Data {
-    // 定义 class的构造方法
-    Data({this.name, this.email});
-
-    String name;
-    String email;
-
-    // 反序列化 json => dart object
-    factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
-
-    // 序列化 dart object => json
-    Map<String, dynamic> toJson() => _$DataToJson(this);
-}
-```
-
-4. 使用 反序列 将  Json => Object
-```dart
-Data data = Data.fromJson(json.decode(jsonValue));
-```
-
-5. 更多关于Dart『序列/反序列』的使用，请参考
-- [Flutter中文网](https://flutterchina.club/json)
-- [Flutter Json自动反序列化——json_serializable](https://juejin.im/post/5b5f00e7e51d45190571172f)
 
 ## Dependency Packages
 - [dio](https://github.com/flutterchina/dio)
@@ -149,3 +63,41 @@ Data data = Data.fromJson(json.decode(jsonValue));
 
 ## 每日关注
 * [github dart trending](https://github.com/trending/dart?since=daily)
+* [FlutterDemo合集](https://github.com/OpenFlutter/Flutter-Notebook)
+
+## 优秀第三方库
+- [闲鱼混合栈管理框架](https://github.com/alibaba-flutter/hybrid_stack_manager)
+- [Agora RTC SDKs 音视频通话](https://github.com/AgoraIO/Flutter-SDK)
+- [应用介绍页——slider](https://github.com/Vadaski/Vadaski-flutter_note_book/tree/master/mecury_project/example/slider_screen)
+- [应用介绍页——intro_view](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/intro_views)
+- [从本地相册选取多张图片](https://github.com/Vadaski/Flutter-Notebook/blob/master/mecury_project/example/load_multi_image)
+- [使用url_launcher唤醒功能](https://github.com/Vadaski/Vadaski-flutter_note_book/tree/master/mecury_project/example/url_launcher_demo)
+- [拿捏图片放大缩小](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/pinch_zoom_image_demo)
+- [一个很棒的等待动画库——Spinkit](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/spinkit_animation)
+- [一些常用ui库——cool_ui](https://github.com/Im-Kevin/cool_ui)
+
+## 动画
+- [基本动画样例](https://github.com/Vadaski/Vadaski-flutter_note_book/tree/master/mecury_project/example/animation_demo)
+- [神奇的Hero动画](https://github.com/Vadaski/Vadaski-flutter_note_book/tree/master/mecury_project/example/hero_demo)
+- [AnimatedContainer](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/animated_container)
+- [AnimatedCrossFade](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/animated_cross_fade)
+
+## 状态管理
+- [Scoped_Model](https://github.com/Vadaski/Vadaski-flutter_note_book/tree/master/mecury_project/example/scoped_demo)
+- [Redux](https://github.com/Vadaski/Flutter-Notebook/tree/master/mecury_project/example/redux_demo)
+- [BLoC](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/bloc_demo)
+- [BLoC Provider模式](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/bloc_provider_pattern)
+- [Google-Provide](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/flutter_provide)
+
+## 其他
+- [flutter 菜鸟 APP，包含常用 flutter 组件的中文文档与 demo 演示](https://github.com/alibaba/flutter-common-widgets-app)
+- [flutter widget of the week 每周介绍一个widget，轻松学习flutter](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/flutter_widget_of_the_week)
+- [GDD2018最新Flutter preview2 widget体验](https://github.com/Vadaski/Flutter-Notebook/tree/master/mecury_project/example/release_preview2)
+- [Flutter Challenge](https://github.com/OpenFlutter/Flutter-Notebook/tree/master/mecury_project/example/animation_challenge)【持续更新中】
+- [一个漂亮的flutter组件库](https://github.com/samarthagarwal/FlutterScreens)
+- [使用flutter实现超过100个精美的ui页面](https://github.com/nb312/flutter-ui-nice)
+- [flutter应用收集 MADE BY THE FLUTTER社区](https://itsallwidgets.com/)
+- [HistoryOfEverything ———— flutter live上展示的精美应用现已开源](https://github.com/2d-inc/HistoryOfEverything)
+
+## 书
+- [Flutter in Action](https://github.com/flutterchina/flutter-in-action)
