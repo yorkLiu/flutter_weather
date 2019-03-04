@@ -68,7 +68,6 @@ class _WeatherCalendarState extends State<WeatherCalendar> {
   }
 
   bool isToday(String date){
-    var today = Utils.getDateYMD();
     return date == Utils.getDateYMD();
   }
 
@@ -85,7 +84,7 @@ class _WeatherCalendarState extends State<WeatherCalendar> {
   /// 雪
   /// weather icon
   Widget _buildWeatherIcon(Future40Days item){
-    String _weather = item.getWeather;
+    String _weather = item.getWeather1;
     String _shortWeather = Utils.getSpecialWeatherText(_weather);
     Widget _icon;
     if(_shortWeather != null){
